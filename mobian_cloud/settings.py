@@ -20,10 +20,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open('mobian_cloud\secret_key.txt') as f:
-    SECRET_KEY = f.read().strip()
-
-SECRET_KEY = "W@ppN!0VsU9u8EcGLekg^aNtTYnvkxhye4d!upHErdlmqHslSjugU7H1t"
+try:
+    with open('mobian_cloud\secret_key.txt') as f:
+        SECRET_KEY = f.read().strip()
+except:
+    SECRET_KEY = "W@ppN!0VsU9u8EcGLekg^aNtTYnvkxhye4d!upHErdlmqHslSjugU7H1t"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
