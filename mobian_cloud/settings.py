@@ -23,6 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 with open('mobian_cloud\secret_key.txt') as f:
     SECRET_KEY = f.read().strip()
 
+SECRET_KEY = "W@ppN!0VsU9u8EcGLekg^aNtTYnvkxhye4d!upHErdlmqHslSjugU7H1t"
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -127,5 +129,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = True #Set to false when developing locally
 CSRF_COOKIE_SECURE = True
