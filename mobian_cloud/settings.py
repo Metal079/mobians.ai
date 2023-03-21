@@ -28,7 +28,7 @@ SECRET_KEY = "W@ppN!0VsU9u8EcGLekg^aNtTYnvkxhye4d!upHErdlmqHslSjugU7H1t"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', 'mobians.azurewebsites.net']
 
 
 # Application definition
@@ -110,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'CST'
+TIME_ZONE = 'America/Chicago'
 
 USE_I18N = True
 
@@ -120,7 +120,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -128,6 +129,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True #Set to false when developing locally
-CSRF_COOKIE_SECURE = True
+#SESSION_COOKIE_SECURE = True
+#SECURE_SSL_REDIRECT = True #Set to false when developing locally
+#CSRF_COOKIE_SECURE = True
