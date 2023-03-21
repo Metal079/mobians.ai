@@ -1,0 +1,195 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+  <title>Main Page</title>
+  <style>
+    .small-image {
+      max-width: 256px;
+      max-height: 256px;
+    }
+
+    .image-container {
+      width: 256px;
+      height: 512px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .image-grid {
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 40%;
+      box-sizing: border-box;
+      border: 1px solid #3880ec;
+      flex-wrap: wrap;
+      display: flex;
+      border-radius: 10px;
+      /* Add rounded borders */
+      background-color: #3880ec;
+
+    }
+
+    #generated-images {
+      display: flex;
+      align-items: top;
+      justify-content: top;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+
+    .center-element {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+    }
+
+    body {
+      background-color: #2fa5e9;
+    }
+
+    #prompt-input-box {
+      align-items: flex-start;
+      justify-content: top;
+      padding-left: 10px;
+      padding-bottom: 10px;
+    }
+
+    .content-container {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    #advanced-options {
+      padding-left: 10px;
+    }
+
+    .input-button-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      width: 33%;
+      padding-left: 10px;
+    }
+
+    .card-body {
+      width: 200%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="p-5 text-center">
+    <h2>Get images</h2>
+    <button id="send-json" class="btn btn-primary">Get images</button>
+  </div>
+
+  <!-- Image box for generations -->
+  <div class="container">
+    <div class="content-container">
+      <div class="image-grid image-container">
+        <img id="img-top-left" src="" class="img-fluid small-image" alt="Image goes here"
+          onerror="this.style.display='none'">
+        <img id="img-top-right" src="" class="img-fluid small-image" alt="Image goes here"
+          onerror="this.style.display='none'">
+        <img id="img-bottom-left" src="" class="img-fluid small-image" alt="Image goes here"
+          onerror="this.style.display='none'">
+        <img id="img-bottom-right" src="" class="img-fluid small-image" alt="Image goes here"
+          onerror="this.style.display='none'">
+      </div>
+
+      <!-- Prompt input box and advanced options button -->
+      <div class="input-button-container">
+        <div id="prompt-input-box" class="input-group">
+          <input type="text" class="form-control" placeholder="Enter Prompt" aria-label="Enter Prompt"
+            aria-describedby="button-addon2">
+          <button class="btn btn-primary" type="button" id="button-addon2">Generate!</button>
+        </div>
+
+        <div id="advanced-options">
+          <button class="btn btn-primary dropdown-toggle" data-bs-toggle="collapse" href="#collapseExample"
+            role="button" aria-expanded="false" aria-controls="collapseExample">
+            Advanced Options
+          </button>
+          <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+              <!-- Negative Prompt -->
+              <div class="mb-3">
+                <label for="formGroupExampleInput" class="form-label">Negative Prompt</label>
+                <input type="text" class="form-control" id="formGroupExampleInput"
+                  placeholder="(worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2">
+              </div>
+
+              <!-- Seed -->
+              <div class="mb-3">
+                <label for="formGroupExampleInput" class="form-label">Seed </label>
+                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="-1">
+              </div>
+
+              <!--CFG-->
+              <label for="customRange1" class="form-label">CFG: <span id="cfg-value">7</span></label>
+              <input type="range" class="form-range" min="0" max="14" id="customRange1">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  
+
+  <script>
+    // Allows us to see the images that are generated
+    const resetImageDisplay = (imageId) => {
+      const imageElement = document.getElementById(imageId);
+      imageElement.style.display = 'block';
+    };
+
+    const resetAllImageDisplays = () => {
+      resetImageDisplay('img-top-left');
+      resetImageDisplay('img-top-right');
+      resetImageDisplay('img-bottom-left');
+      resetImageDisplay('img-bottom-right');
+    };
+
+    document.getElementById('customRange1').addEventListener('input', function (event) {
+      document.getElementById('cfg-value').textContent = event.target.value;
+    });
+
+    // Send the request to the server
+    document.getElementById('send-json').addEventListener('click', async () => {
+      const data = { image_name: 'tails' };
+      const response = await fetch('process_json', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      // Get the response from the server and display it
+      const result = await response.json();
+      document.getElementById('img-top-left').src = result.image_urls[0];
+      document.getElementById('img-top-right').src = result.image_urls[1];
+      document.getElementById('img-bottom-left').src = result.image_urls[2];
+      document.getElementById('img-bottom-right').src = result.image_urls[3];
+      resetAllImageDisplays();
+    });
+  </script>
+</body>
+
+</html>
