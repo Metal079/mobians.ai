@@ -1,2 +1,3 @@
 mobian_cloud/secret_key.txt
 mobian_cloud/settings.py
+mobian_cloud/postgress_pass.txt

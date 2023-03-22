@@ -23,7 +23,6 @@ def process_json(request):
 
         response = requests.post(url=f'https://6827-2601-247-c881-48d0-55a7-90bf-d3f2-b2fe.ngrok.io/sdapi/v1/txt2img', json=data)
         r = response.json()
-        remove_user_from_queue(request.session.session_key)
 
         # Process the data here
         base64_images = []
@@ -41,6 +40,8 @@ def process_json(request):
             img_io.seek(0)
             base64_images.append(base64.b64encode(img_io.getvalue()).decode('utf-8'))
 
+        print(queue)
+        remove_user_from_queue(request.session.session_key)
         return JsonResponse({'images': base64_images})
     else:
         return JsonResponse({'error': 'Invalid request method'})
@@ -72,6 +73,11 @@ queue = []
 
 def get_position(request):
     global queue
+
+    # Ensure that the session is created and the session key is generated
+    if not request.session.session_key:
+        request.session.save()
+
     user_id = request.session.session_key
 
     with queue_lock:
