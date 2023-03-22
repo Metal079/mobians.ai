@@ -9,37 +9,69 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
     crossorigin="anonymous"></script>
-  <title>Main Page</title>
+  <title>The best Sonic OC generator </title>
   <style>
     .small-image {
-      max-width: 255px;
+      width: 255px;
+      height: auto;
       max-height: 255px;
+      object-fit: contain;
+      margin: 0;
+    }
+
+    @media (max-width: 767px) {
+      .image-grid {
+        width: 512px;
+      }
     }
 
     .image-container {
+      /* display: flex; */
       width: 512px;
       height: 512px;
-      display: flex;
       justify-content: center;
       align-items: center;
+      position: relative;
     }
 
     .image-grid {
-      padding: 0;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
       width: 512px;
       height: 512px;
       box-sizing: border-box;
       border: 1px solid #3880ec;
-      flex-wrap: wrap;
-      display: flex;
       border-radius: 10px;
-      /* Add rounded borders */
       background-color: #3880ec;
+    }
 
+    @media (max-width: 767px) {
+      .image-grid {
+        width: 100%;
+        height: auto;
+        max-width: 512px;
+        max-height: 512px;
+        height: auto;
+      }
+    }
+
+
+    @media (max-width: 767px) {
+      .content-container {
+        flex-direction: column;
+      }
+
+      .input-button-container {
+        width: 100%;
+        padding-left: 0;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 991px) {
+      .input-button-container {
+        width: 50%;
+      }
     }
 
     #generated-images {
@@ -89,27 +121,64 @@
     .w-200 {
       width: 200%;
     }
+
+    #loading-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 1;
+    }
   </style>
 </head>
 
 <body>
-  <div class="p-5 text-center">
-    <h2>Get images</h2>
-    <button id="send-json" class="btn btn-primary">Get images</button>
-  </div>
+  <nav class="navbar navbar-dark bg-primary">
+    <a class="navbar-brand" href="#"> Mobian.AI</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+      aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Features</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Pricing</a>
+        </li>
+      </ul>
+      <span class="navbar-text">
+        Navbar text with an inline element
+      </span>
+    </div>
+  </nav>
+  <p></p>
 
   <!-- Image box for generations -->
   <div class="container">
     <div class="content-container">
       <div class="image-grid image-container">
-        <img id="img-top-left" src="" class="img-fluid small-image" alt="Image goes here"
-          onerror="this.style.display='none'">
-        <img id="img-top-right" src="" class="img-fluid small-image" alt="Image goes here"
-          onerror="this.style.display='none'">
-        <img id="img-bottom-left" src="" class="img-fluid small-image" alt="Image goes here"
-          onerror="this.style.display='none'">
-        <img id="img-bottom-right" src="" class="img-fluid small-image" alt="Image goes here"
-          onerror="this.style.display='none'">
+        <!-- Loading container -->
+        <div id="loading-container" class="d-none">
+          <!-- Loading bar -->
+          <div id="loading-bar">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Generating images...</span>
+            </div>
+            <!-- Position in queue -->
+            <div id="queue-position"></div>
+          </div>
+        </div>
+
+        <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
+        <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
+        <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
+        <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
       </div>
 
       <!-- Prompt input box and advanced options button -->
@@ -158,6 +227,7 @@
       imageElement.style.display = 'block';
     };
 
+    // Unhide all images
     const resetAllImageDisplays = () => {
       resetImageDisplay('img-top-left');
       resetImageDisplay('img-top-right');
@@ -165,44 +235,43 @@
       resetImageDisplay('img-bottom-right');
     };
 
+    // Hide all images
+    const hideAllImages = () => {
+      document.getElementById('img-top-left').style.display = 'none';
+      document.getElementById('img-top-right').style.display = 'none';
+      document.getElementById('img-bottom-left').style.display = 'none';
+      document.getElementById('img-bottom-right').style.display = 'none';
+    };
+
     document.getElementById('customRange1').addEventListener('input', function (event) {
       document.getElementById('cfg-value').textContent = event.target.value;
     });
 
-    // Send the request to the server for test images
-    document.getElementById('send-json').addEventListener('click', async () => {
-      const data = { image_name: 'tails' };
-      const response = await fetch('image_test_square', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
-
-      // Get the response from the server and display it
-      const result = await response.json();
-      document.getElementById('img-top-left').src = result.image_urls[0];
-      document.getElementById('img-top-right').src = result.image_urls[1];
-      document.getElementById('img-bottom-left').src = result.image_urls[2];
-      document.getElementById('img-bottom-right').src = result.image_urls[3];
-      resetAllImageDisplays();
-    });
-
     // Send the request to the server for generated images
-    // Add an event listener to the button
     document.getElementById('button-addon2').addEventListener('click', async function () {
+      // Disable the generate button until result is returned
+      document.getElementById('button-addon2').disabled = true;
+
+      // Hide images
+      hideAllImages();
+
+      // Show loading bar
+      document.getElementById("loading-container").classList.remove("d-none");
+
+      // Fetch user's position in the queue periodically
+      queueInterval = setInterval(fetchQueuePosition, 2000); // Fetches position every 2 seconds
+
       // Get the prompt from the input element
       const payload = {
         "prompt": document.getElementById('prompt-input').value,
         "steps": 20,
         "negative_prompt": document.getElementById('formGroupExampleInput').value || "(worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, pubic hair, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2",
-        "seed": document.getElementById('formGroupExampleInput').value || -1, 
+        "seed": document.getElementById('formGroupExampleInput').value || -1,
         "cfg": document.getElementById('customRange1').value || 7,
         "batch_size": 4
       }
 
-      // Call your API
+      // Call auto1111 API
       const response = await fetch('process_json', {
         method: 'POST',
         headers: {
@@ -216,16 +285,34 @@
         const data = await response.json(); // Parse the JSON response
         const base64Images = data.images;
 
+        // When the image is retrieved, hide the loading bar and queue
+        document.getElementById("loading-container").classList.add("d-none");
+        clearInterval(queueInterval);
+
         // Set the src attribute of the image elements to the base64-encoded images
         document.getElementById('img-top-left').src = 'data:image/png;base64,' + base64Images[0];
         document.getElementById('img-top-right').src = 'data:image/png;base64,' + base64Images[1];
         document.getElementById('img-bottom-left').src = 'data:image/png;base64,' + base64Images[2];
         document.getElementById('img-bottom-right').src = 'data:image/png;base64,' + base64Images[3];
 
+        // Unhide the images and enable generate button
         resetAllImageDisplays();
+        document.getElementById('button-addon2').disabled = false;
       } else {
         console.error(`Error: ${response.status}`); // Handle the error
       }
+
+      async function fetchQueuePosition() {
+        try {
+          const response = await fetch('/get_position/');
+          const data = await response.json();
+          const position = data.position;
+          document.getElementById("queue-position").innerText = `Position in queue: ${position}`;
+        } catch (error) {
+          console.error('Error fetching queue position:', error);
+        }
+      }
+
     });
 
   </script>

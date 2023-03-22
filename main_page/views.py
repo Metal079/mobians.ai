@@ -2,6 +2,8 @@ import json
 import io
 import base64
 import requests
+from threading import Lock
+
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -21,6 +23,7 @@ def process_json(request):
 
         response = requests.post(url=f'https://6827-2601-247-c881-48d0-55a7-90bf-d3f2-b2fe.ngrok.io/sdapi/v1/txt2img', json=data)
         r = response.json()
+        remove_user_from_queue(request.session.session_key)
 
         # Process the data here
         base64_images = []
@@ -61,3 +64,26 @@ def image_test_square(request):
         return JsonResponse(result)
     else:
         return JsonResponse({'error': 'Invalid request method'})
+    
+
+# Queue for image generation
+queue_lock = Lock()
+queue = []
+
+def get_position(request):
+    global queue
+    user_id = request.session.session_key
+
+    with queue_lock:
+        if user_id not in queue:
+            queue.append(user_id)
+        position = queue.index(user_id)
+
+    return JsonResponse({'position': position + 1})  # Position is 0-indexed, so we add 1
+
+# Remember to remove the user from the queue when the image generation is done
+def remove_user_from_queue(user_id):
+    global queue
+    with queue_lock:
+        if user_id in queue:
+            queue.remove(user_id)
