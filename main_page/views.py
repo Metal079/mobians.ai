@@ -7,7 +7,6 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.templatetags.static import static
-from django.http import HttpResponse
 from PIL import Image, PngImagePlugin
 
 # Create your views here.
@@ -20,7 +19,7 @@ def process_json(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        response = requests.post(url=f'http://127.0.0.1:7860/sdapi/v1/txt2img', json=data)
+        response = requests.post(url=f'https://6827-2601-247-c881-48d0-55a7-90bf-d3f2-b2fe.ngrok.io/sdapi/v1/txt2img', json=data)
         r = response.json()
 
         # Process the data here
@@ -30,7 +29,7 @@ def process_json(request):
             img_io = io.BytesIO()
 
             png_payload = {"image": "data:image/png;base64," + i}
-            response2 = requests.post(url=f'http://127.0.0.1:7860/sdapi/v1/png-info', json=png_payload)
+            response2 = requests.post(url=f'https://6827-2601-247-c881-48d0-55a7-90bf-d3f2-b2fe.ngrok.io/sdapi/v1/png-info', json=png_payload)
 
             pnginfo = PngImagePlugin.PngInfo()
             pnginfo.add_text("parameters", response2.json().get("info"))
