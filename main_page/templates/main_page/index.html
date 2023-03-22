@@ -12,12 +12,12 @@
   <title>Main Page</title>
   <style>
     .small-image {
-      max-width: 256px;
-      max-height: 256px;
+      max-width: 255px;
+      max-height: 255px;
     }
 
     .image-container {
-      width: 256px;
+      width: 512px;
       height: 512px;
       display: flex;
       justify-content: center;
@@ -30,7 +30,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 40%;
+      width: 512px;
+      height: 512px;
       box-sizing: border-box;
       border: 1px solid #3880ec;
       flex-wrap: wrap;
@@ -85,7 +86,7 @@
       padding-left: 10px;
     }
 
-    .card-body {
+    .w-200 {
       width: 200%;
     }
   </style>
@@ -115,7 +116,7 @@
       <div class="input-button-container">
         <div id="prompt-input-box" class="input-group">
           <input type="text" class="form-control" placeholder="Enter Prompt" aria-label="Enter Prompt"
-            aria-describedby="button-addon2">
+            aria-describedby="button-addon2" id="prompt-input">
           <button class="btn btn-primary" type="button" id="button-addon2">Generate!</button>
         </div>
 
@@ -124,7 +125,7 @@
             role="button" aria-expanded="false" aria-controls="collapseExample">
             Advanced Options
           </button>
-          <div class="collapse" id="collapseExample">
+          <div class="collapse w-200" id="collapseExample">
             <div class="card card-body">
               <!-- Negative Prompt -->
               <div class="mb-3">
@@ -150,8 +151,6 @@
   </div>
   </div>
 
-  
-
   <script>
     // Allows us to see the images that are generated
     const resetImageDisplay = (imageId) => {
@@ -170,10 +169,10 @@
       document.getElementById('cfg-value').textContent = event.target.value;
     });
 
-    // Send the request to the server
+    // Send the request to the server for test images
     document.getElementById('send-json').addEventListener('click', async () => {
       const data = { image_name: 'tails' };
-      const response = await fetch('process_json', {
+      const response = await fetch('image_test_square', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -189,6 +188,46 @@
       document.getElementById('img-bottom-right').src = result.image_urls[3];
       resetAllImageDisplays();
     });
+
+    // Send the request to the server for generated images
+    // Add an event listener to the button
+    document.getElementById('button-addon2').addEventListener('click', async function () {
+      // Get the prompt from the input element
+      const payload = {
+        "prompt": document.getElementById('prompt-input').value,
+        "steps": 20,
+        "negative_prompt": document.getElementById('formGroupExampleInput').value || "(worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, pubic hair, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2",
+        "seed": document.getElementById('formGroupExampleInput').value || -1, 
+        "cfg": document.getElementById('customRange1').value || 7,
+        "batch_size": 4
+      }
+
+      // Call your API
+      const response = await fetch('process_json', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      // Handle the API response
+      if (response.ok) {
+        const data = await response.json(); // Parse the JSON response
+        const base64Images = data.images;
+
+        // Set the src attribute of the image elements to the base64-encoded images
+        document.getElementById('img-top-left').src = 'data:image/png;base64,' + base64Images[0];
+        document.getElementById('img-top-right').src = 'data:image/png;base64,' + base64Images[1];
+        document.getElementById('img-bottom-left').src = 'data:image/png;base64,' + base64Images[2];
+        document.getElementById('img-bottom-right').src = 'data:image/png;base64,' + base64Images[3];
+
+        resetAllImageDisplays();
+      } else {
+        console.error(`Error: ${response.status}`); // Handle the error
+      }
+    });
+
   </script>
 </body>
 
