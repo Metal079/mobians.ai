@@ -258,14 +258,15 @@
       // Show loading bar
       document.getElementById("loading-container").classList.remove("d-none");
       // Fetch user's position in the queue periodically
+      let queueRequestInProgress = false;
       queueInterval = setInterval(fetchQueuePosition, 500); // Fetches position every 1 seconds
-      
+
 
       // Get the prompt from the input element
       const payload = {
         "prompt": document.getElementById('prompt-input').value,
         "steps": 20,
-        "negative_prompt": document.getElementById('formGroupExampleInput').value || "(worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, pubic hair, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2",
+        "negative_prompt": document.getElementById('formGroupExampleInput').value || "EasyNegative, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, pubic hair, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2",
         "seed": document.getElementById('formGroupExampleInput').value || -1,
         "cfg": document.getElementById('customRange1').value || 7,
         "batch_size": 4
@@ -305,6 +306,13 @@
       }
 
       async function fetchQueuePosition() {
+        if (queueRequestInProgress) {
+          return
+        }
+
+        // Set the flag to true indicating a request is in progress
+        queueRequestInProgress = true;
+
         try {
           const response = await fetch('/get_position/');
           const data = await response.json();
@@ -312,6 +320,9 @@
           document.getElementById("queue-position").innerText = `Position in queue: ${position}`;
         } catch (error) {
           console.error('Error fetching queue position:', error);
+        } finally {
+          // Set the flag to false indicating the request has completed
+          queueRequestInProgress = false;
         }
       }
 
