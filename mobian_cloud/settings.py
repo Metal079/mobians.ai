@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 
+from dotenv import load_dotenv
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,11 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-try:
-    with open('mobian_cloud\secret_key.txt') as f:
-        SECRET_KEY = f.read().strip()
-except:
-    SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -79,19 +78,18 @@ WSGI_APPLICATION = 'mobian_cloud.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-try:
-    with open('mobian_cloud\postgress_pass.txt') as f:
-        DB_PASS = f.read().strip()
-except:
-    pass
+DBNAME=os.environ.get('DBNAME')
+DBHOST=os.environ.get('DBHOST')
+DBUSER=os.environ.get('DBUSER')
+DB_PASS = os.environ.get('DB_PASS')
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mobians-database',
-        'USER': 'postgres',
+        'NAME': DBNAME,
+        'USER': DBUSER,
         'PASSWORD': DB_PASS,
-        'HOST': 'localhost',  # or the IP address of your PostgreSQL server
+        'HOST': DBHOST,  # or the IP address of your PostgreSQL server
         'PORT': '5432',  # the default PostgreSQL port
     }
 }
