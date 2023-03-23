@@ -88,7 +88,7 @@ except:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mobian',
+        'NAME': 'mobians-database',
         'USER': 'postgres',
         'PASSWORD': DB_PASS,
         'HOST': 'localhost',  # or the IP address of your PostgreSQL server
@@ -142,7 +142,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 #SESSION_COOKIE_SECURE = True
-#SECURE_SSL_REDIRECT = True #Set to false when developing locally
+SECURE_SSL_REDIRECT = False #Set to false when developing locally
 #CSRF_COOKIE_SECURE = True
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
