@@ -18,6 +18,7 @@ def index(resquest):
 
 @csrf_exempt
 def process_json(request):
+    global queue
     if request.method == 'POST':
         data = json.loads(request.body)
 
