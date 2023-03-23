@@ -79,6 +79,7 @@ def get_position(request):
         request.session.save()
 
     user_id = request.session.session_key
+    print(queue)
 
     with queue_lock:
         if user_id not in queue:

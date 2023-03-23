@@ -257,9 +257,9 @@
 
       // Show loading bar
       document.getElementById("loading-container").classList.remove("d-none");
-
       // Fetch user's position in the queue periodically
-      queueInterval = setInterval(fetchQueuePosition, 2000); // Fetches position every 2 seconds
+      queueInterval = setInterval(fetchQueuePosition, 500); // Fetches position every 1 seconds
+      
 
       // Get the prompt from the input element
       const payload = {
@@ -279,6 +279,8 @@
         },
         body: JSON.stringify(payload)
       });
+
+
 
       // Handle the API response
       if (response.ok) {
