@@ -2,3 +2,4 @@ Django
 requests
 pillow
 psycopg2
+python-dotenv
