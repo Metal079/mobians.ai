@@ -81,14 +81,14 @@ WSGI_APPLICATION = 'mobian_cloud.wsgi.application'
 DBNAME=os.environ.get('DBNAME')
 DBHOST=os.environ.get('DBHOST')
 DBUSER=os.environ.get('DBUSER')
-DB_PASS = os.environ.get('DB_PASS')
+DBPASS=os.environ.get('DBPASS')
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': DBNAME,
         'USER': DBUSER,
-        'PASSWORD': DB_PASS,
+        'PASSWORD': DBPASS,
         'HOST': DBHOST,  # or the IP address of your PostgreSQL server
         'PORT': '5432',  # the default PostgreSQL port
     }
