@@ -28,15 +28,19 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-template-rows: 1fr 1fr;
-      width: 512px;
-      height: 512px;
+      margin-left: 10%;
+
+      min-height: 512PX;
+      min-WIDTH: 512PX;
       box-sizing: border-box;
       border: 1px solid #3880ec;
       border-radius: 10px;
       background-color: #3880ec;
+      position: static;
+      aspect-ratio: 1 / 1;
     }
 
-    @media (max-width: 767px) {
+    @media (max-width: 1200px) {
       .content-container {
         flex-direction: column;
         /* Add this */
@@ -51,8 +55,33 @@
         width: 100%;
         margin-top: 20px;
         flex-grow: 1;
+        margin: auto;
+      }
+
+      .image-grid {
+        width: 1024px;
+        height: 1024px;
+        max-width: max-content;
+        max-height: max-content;
+        aspect-ratio: 1 / 1;
+        margin-left: 0%;
+      }
+
+      .small-image {
+        width: 510px;
+        height: auto;
+        max-height: 510px;
+        object-fit: contain;
+      }
+
+      .col-md-12 {
+        margin-left: 0%;
+        left: 0;
+        right: 0;
       }
     }
+
+
 
     #generated-images {
       display: flex;
@@ -103,10 +132,9 @@
     }
 
     #loading-container {
-      position: absolute;
+      position: relative;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
       text-align: center;
       z-index: 1;
     }
@@ -149,64 +177,63 @@
   <p></p>
 
   <!-- Image box for generations -->
-  <div class="container">
-    <div class="content-container">
-      <div class="image-grid image-container">
-        <!-- Loading container -->
-        <div id="loading-container" class="d-none">
-          <!-- Loading bar -->
-          <div id="loading-bar">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Generating images...</span>
-            </div>
-            <!-- Position in queue -->
-            <div id="queue-position"></div>
+  <div class="content-container">
+    <div class="image-grid image-container">
+      <!-- Loading container -->
+      <div id="loading-container" class="d-none">
+        <!-- Loading bar -->
+        <div id="loading-bar">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Generating images...</span>
           </div>
+          <!-- Position in queue -->
+          <div id="queue-position"></div>
         </div>
-
-        <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
-        <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
-        <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
-        <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
       </div>
 
-      <!-- Prompt input box and advanced options button -->
-      <div class="input-button-container">
-        <div id="prompt-input-box" class="input-group">
-          <input type="text" class="form-control" placeholder="Enter Prompt" aria-label="Enter Prompt"
-            aria-describedby="button-addon2" id="prompt-input">
-          <button class="btn btn-primary" type="button" id="button-addon2">Generate!</button>
-        </div>
+      <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
+      <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
+      <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
+      <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
+    </div>
 
-        <div id="advanced-options">
-          <button class="btn btn-primary dropdown-toggle" data-bs-toggle="collapse" href="#collapseExample"
-            role="button" aria-expanded="false" aria-controls="collapseExample">
-            Advanced Options
-          </button>
-          <div class="collapse w-200" id="collapseExample">
-            <div class="card card-body">
-              <!-- Negative Prompt -->
-              <div class="mb-3">
-                <label for="formGroupExampleInput" class="form-label">Negative Prompt</label>
-                <input type="text" class="form-control" id="formGroupExampleInput"
-                  placeholder="(worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2">
-              </div>
+    <!-- Prompt input box and advanced options button -->
+    <div class="input-button-container">
+      <div id="prompt-input-box" class="input-group">
+        <input type="text" class="form-control" placeholder="Enter Prompt" aria-label="Enter Prompt"
+          aria-describedby="button-addon2" id="prompt-input">
+        <button class="btn btn-primary" type="button" id="button-addon2">Generate!</button>
+      </div>
 
-              <!-- Seed -->
-              <div class="mb-3">
-                <label for="formGroupExampleInput" class="form-label">Seed </label>
-                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="-1">
-              </div>
-
-              <!--CFG-->
-              <label for="customRange1" class="form-label">CFG: <span id="cfg-value">7</span></label>
-              <input type="range" class="form-range" min="0" max="14" id="customRange1">
+      <div id="advanced-options">
+        <button class="btn btn-primary dropdown-toggle" data-bs-toggle="collapse" href="#collapseExample" role="button"
+          aria-expanded="false" aria-controls="collapseExample">
+          Advanced Options
+        </button>
+        <div class="collapse w-200" id="collapseExample">
+          <div class="card card-body">
+            <!-- Negative Prompt -->
+            <div class="mb-3">
+              <label for="formGroupExampleInput" class="form-label">Negative Prompt</label>
+              <input type="text" class="form-control" id="formGroupExampleInput"
+                placeholder="(worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2">
             </div>
+
+            <!-- Seed -->
+            <div class="mb-3">
+              <label for="formGroupExampleInput" class="form-label">Seed </label>
+              <input type="text" class="form-control" id="formGroupExampleInput" placeholder="-1">
+            </div>
+
+            <!--CFG-->
+            <label for="customRange1" class="form-label">CFG: <span id="cfg-value">7</span></label>
+            <input type="range" class="form-range" min="0" max="14" id="customRange1">
           </div>
         </div>
       </div>
     </div>
   </div>
+
   <!-- FAQ Section -->
   <div class="container mt-5">
     <div class="row">
@@ -220,7 +247,58 @@
           </div>
           <div class="card-body">
             <p class="mb-0">Make sure to include their full name when generating
-              for best results! EX: Sonic -> 'Sonic the hedgehog', Tails -> 'Tails the fox'. The model was trained on booru tags, using them allow you specify your prompt much more.</p>
+              for best results! EX: Sonic -> 'Sonic the hedgehog', Tails -> 'Tails the fox'. The model was trained on
+              booru tags, using them allow you specify your prompt much more.</p>
+          </div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-header">
+            <h5 class="mb-0">
+              What characters can I generate?
+            </h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-0">Curent list is as follows.
+
+            <div class="row">
+              <div class="col col-md-4">
+                <ul>
+                  <li>Sonic the hedgehog</li>
+                  <li>Amy Rose</li>
+                  <li>Tails the fox</li>
+                  <li>Knuckles the echidna</li>
+                  <li>Rouge the bat</li>
+                  <li>Sticks the badger</li>
+                  <li>Marine the Raccoon</li>
+                  <li>Jet the hawk</li>
+                </ul>
+              </div>
+              <div class="col col-md-4">
+                <ul>
+                  <li>Whisper the wolf</li>
+                  <li>Silver the hedgehog</li>
+                  <li>Blaze the cat</li>
+                  <li>Vanilla the rabbit</li>
+                  <li>Cream the rabbit</li>
+                  <li>Charmy the bee</li>
+                  <li>Espio the chameleon</li>
+                  <li>Vector the crocodile</li>
+                </ul>
+              </div>
+              <div class="col col-md-4">
+                <ul>
+                  <li>Shadow the hedgehog</li>
+                  <li>Sally Acorn</li>
+                  <li>Tangle the lemur</li>
+                  <li>Mobian (Original characters in sonic style basically!)</li>
+                  <li>Cosmo the seedrian</li>
+                  <li>Tikal the echidna</li>
+                  <li>Honey the cat</li>
+                  <li>Bunnie Rabbot</li>
+                </ul>
+              </div>
+            </div>
+            </p>
           </div>
         </div>
         <div class="card mt-3">
