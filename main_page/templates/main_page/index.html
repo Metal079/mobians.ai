@@ -16,19 +16,9 @@
       height: auto;
       max-height: 255px;
       object-fit: contain;
-      margin: 0;
-    }
-
-    @media (max-width: 767px) {
-      .image-grid {
-        width: 512px;
-      }
     }
 
     .image-container {
-      /* display: flex; */
-      width: 512px;
-      height: 512px;
       justify-content: center;
       align-items: center;
       position: relative;
@@ -47,30 +37,20 @@
     }
 
     @media (max-width: 767px) {
-      .image-grid {
-        width: 100%;
-        height: auto;
-        max-width: 512px;
-        max-height: 512px;
-        height: auto;
-      }
-    }
-
-
-    @media (max-width: 767px) {
       .content-container {
         flex-direction: column;
+        /* Add this */
+      }
+
+      .image-container {
+        flex-grow: 1;
+        width: 100%;
       }
 
       .input-button-container {
         width: 100%;
-        padding-left: 0;
-      }
-    }
-
-    @media (min-width: 768px) and (max-width: 991px) {
-      .input-button-container {
-        width: 50%;
+        margin-top: 20px;
+        flex-grow: 1;
       }
     }
 
@@ -103,6 +83,7 @@
     .content-container {
       display: flex;
       align-items: flex-start;
+      flex-wrap: wrap;
     }
 
     #advanced-options {
@@ -112,9 +93,8 @@
     .input-button-container {
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
       align-items: flex-start;
-      width: 33%;
+      width: 5in;
       padding-left: 10px;
     }
 
@@ -130,12 +110,21 @@
       text-align: center;
       z-index: 1;
     }
+
+    .card {
+      background-color: #3880ec;
+      border: 0;
+    }
+
+    .card-body {
+      background-color: #2fa5e9;
+    }
   </style>
 </head>
 
 <body>
   <nav class="navbar navbar-dark bg-primary">
-    <a class="navbar-brand" href="#"> Mobian.AI</a>
+    <a class="navbar-brand" href="#"> Mobians.AI</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
       aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -218,6 +207,74 @@
       </div>
     </div>
   </div>
+  <!-- FAQ Section -->
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-12 ">
+        <h2 class="mb-4">FAQ</h2>
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">
+              What are some tips for good images?
+            </h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-0">Make sure to include their full name when generating
+              for best results! EX: Sonic -> 'Sonic the hedgehog', Tails -> 'Tails the fox'. The model was trained on booru tags, using them allow you specify your prompt much more.</p>
+          </div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-header">
+            <h5 class="mb-0">
+              What is a negative prompt?
+            </h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-0">A negative prompt tells the model what it should avoid including in the picture. By default
+              a decent negative prompt is added to the prompt, so this should avoid being changed unless you know what
+              you're doing.</p>
+          </div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-header">
+            <h5 class="mb-0">
+              What is a seed?
+            </h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-0">By default a random seed (-1) is sent when generating an image, this means if you send the
+              same prompt twice, you will get different results. If you set the seed to a specific value, you will
+              countinously get the same set of images.</p>
+          </div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-header">
+            <h5 class="mb-0">
+              What is CFG?
+            </h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-0">CFG refers to how closely a image tries to a prompt, too high values may fry images, while
+              too low of a value will result in a random mess of a photo being generated. By default 7 is used but this
+              can be changed to experiment with</p>
+          </div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-header">
+            <h5 class="mb-0">
+              Can I run this locally on my PC?
+            </h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-0">Yep! Model is available to use in stable diffusion here <a
+                href="https://civitai.com/models/1493">https://civitai.com/models/1493</a></p>
+          </div>
+        </div>
+        <!-- Add more questions and answers as needed -->
+      </div>
+    </div>
+  </div>
+
   </div>
 
   <script>
@@ -259,6 +316,7 @@
       document.getElementById("loading-container").classList.remove("d-none");
       // Fetch user's position in the queue periodically
       let queueRequestInProgress = false;
+      fetchQueuePosition();
       queueInterval = setInterval(fetchQueuePosition, 500); // Fetches position every 1 seconds
 
 
