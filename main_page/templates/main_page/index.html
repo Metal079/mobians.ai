@@ -28,7 +28,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-template-rows: 1fr 1fr;
-      margin-left: 10%;
+      margin-left: 20%;
 
       min-height: 512PX;
       min-WIDTH: 512PX;
@@ -222,7 +222,7 @@
             <!-- Seed -->
             <div class="mb-3">
               <label for="formGroupExampleInput" class="form-label">Seed </label>
-              <input type="text" class="form-control" id="formGroupExampleInput" placeholder="-1">
+              <input type="text" class="form-control" id="seedInput" placeholder="-1">
             </div>
 
             <!--CFG-->
@@ -403,8 +403,8 @@
         "prompt": document.getElementById('prompt-input').value,
         "steps": 20,
         "negative_prompt": document.getElementById('formGroupExampleInput').value || "EasyNegative, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, pubic hair, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2",
-        "seed": document.getElementById('formGroupExampleInput').value || -1,
-        "cfg": document.getElementById('customRange1').value || 7,
+        "seed": Number(document.getElementById('seedInput').value) || -1,
+        "cfg_scale": Number(document.getElementById('customRange1').value) || 7,
         "batch_size": 4
       }
 
