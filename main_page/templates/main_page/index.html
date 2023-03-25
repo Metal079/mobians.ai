@@ -530,10 +530,10 @@
         clearInterval(queueInterval);
 
         // Set the src attribute of the image elements to the base64-encoded images
-        document.getElementById('img-top-left').src = 'data:image/png;base64,' + base64Images[1];
-        document.getElementById('img-top-right').src = 'data:image/png;base64,' + base64Images[2];
-        document.getElementById('img-bottom-left').src = 'data:image/png;base64,' + base64Images[3];
-        document.getElementById('img-bottom-right').src = 'data:image/png;base64,' + base64Images[4];
+        document.getElementById('img-top-left').src = 'data:image/png;base64,' + base64Images[0];
+        document.getElementById('img-top-right').src = 'data:image/png;base64,' + base64Images[1];
+        document.getElementById('img-bottom-left').src = 'data:image/png;base64,' + base64Images[2];
+        document.getElementById('img-bottom-right').src = 'data:image/png;base64,' + base64Images[3];
 
         // Unhide the images and enable generate button
         resetAllImageDisplays();

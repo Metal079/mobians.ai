@@ -33,7 +33,7 @@ def process_json(request):
 
         # Process the data here
         base64_images = []
-        for i in r['images']:
+        for i in r['images'][1:]:
             image = Image.open(io.BytesIO(base64.b64decode(i.split(",", 1)[0])))
             img_io = io.BytesIO()
 
