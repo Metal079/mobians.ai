@@ -12,9 +12,9 @@
   <title>The best Sonic OC generator </title>
   <style>
     .small-image {
-      width: 255px;
+      width: auto;
       height: auto;
-      max-height: 255px;
+      max-height: 384px;
       object-fit: contain;
     }
 
@@ -30,8 +30,8 @@
       grid-template-rows: 1fr 1fr;
       margin-left: 20%;
 
-      min-height: 512PX;
-      min-WIDTH: 512PX;
+      height: 768px;
+      width: 512px;
       box-sizing: border-box;
       border: 1px solid #3880ec;
       border-radius: 10px;
@@ -58,9 +58,9 @@
         margin: auto;
       }
 
-      .image-grid {
+      .image-grid-mobile {
         width: 1024px;
-        height: 1024px;
+        height: 1536px;
         max-width: max-content;
         max-height: max-content;
         aspect-ratio: 1 / 1;
@@ -80,8 +80,6 @@
         right: 0;
       }
     }
-
-
 
     #generated-images {
       display: flex;
@@ -178,7 +176,7 @@
 
   <!-- Image box for generations -->
   <div class="content-container">
-    <div class="image-grid image-container">
+    <div class="image-grid image-container image-grid-mobile">
       <!-- Loading container -->
       <div id="loading-container" class="d-none">
         <!-- Loading bar -->
@@ -203,6 +201,17 @@
         <input type="text" class="form-control" placeholder="Enter Prompt" aria-label="Enter Prompt"
           aria-describedby="button-addon2" id="prompt-input">
         <button class="btn btn-primary" type="button" id="button-addon2">Generate!</button>
+
+        <div class="form-floating">
+          <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
+            onchange="changeAspectRatio()">
+            <option selected></option>
+            <option value="1">Landscape</option>
+            <option value="2">Square</option>
+            <option value="3">Portrait</option>
+          </select>
+          <label for="floatingSelect">Image aspect-ratio</label>
+        </div>
       </div>
 
       <div id="advanced-options">
@@ -378,6 +387,63 @@
       document.getElementById('img-bottom-right').style.display = 'none';
     };
 
+    // update image box ratio
+    const changeAspectRatio = () => {
+      const selectElement = document.getElementById('floatingSelect');
+      const selectedOption = selectElement.options[selectElement.selectedIndex].value;
+      const imageGrid = document.querySelector('.image-grid');
+      const imageGrid_mobile = document.querySelector('.image-grid-mobile');
+
+      let aspectRatio;
+      let isMobileView = window.matchMedia('(max-width: 1200px)').matches;
+
+      switch (selectedOption) {
+        case '1':
+          aspectRatio = '2 / 1'; // Landscape
+          if (isMobileView) {
+            imageGrid_mobile.style.width = '1536px';
+            imageGrid_mobile.style.height = '1024px';
+          } else {
+            imageGrid.style.width = '768px';
+            imageGrid.style.height = '512px';
+          }
+          break;
+        case '2':
+          aspectRatio = '1 / 1'; // Square
+          if (isMobileView) {
+            imageGrid_mobile.style.width = '1024px';
+            imageGrid_mobile.style.height = '1024px';
+          } else {
+            imageGrid.style.width = '512px';
+            imageGrid.style.height = '512px';
+          }
+          break;
+        case '3':
+          aspectRatio = '2 / 3'; // Portrait
+          if (isMobileView) {
+            imageGrid_mobile.style.width = '768px';
+            imageGrid_mobile.style.height = '1536px';
+          } else {
+            imageGrid.style.width = '512px';
+            imageGrid.style.height = '768px';
+          }
+          break;
+        default:
+          aspectRatio = '2 / 3';
+          if (isMobileView) {
+            imageGrid_mobile.style.width = '768px';
+            imageGrid_mobile.style.height = '1536px';
+          } else {
+            imageGrid.style.width = '512px';
+            imageGrid.style.height = '768px';
+          }
+      }
+
+      imageGrid.style.aspectRatio = aspectRatio;
+      hideAllImages();
+    };
+
+
     document.getElementById('customRange1').addEventListener('input', function (event) {
       document.getElementById('cfg-value').textContent = event.target.value;
     });
@@ -399,13 +465,55 @@
 
 
       // Get the prompt from the input element
+      const getImageWidth = () => {
+        const selectElement = document.getElementById('floatingSelect');
+        const selectedOption = selectElement.options[selectElement.selectedIndex].value;
+        let imageWidth;
+        switch (selectedOption) {
+          case '1':
+            imageWidth = 768; // Landscape
+            break;
+          case '2':
+            imageWidth = 512; // Square
+            break;
+          case '3':
+            imageWidth = 512; // Portrait
+            break;
+          default:
+            imageWidth = 512;
+        }
+        return imageWidth;
+      };
+
+      const getImageHeight = () => {
+        const selectElement = document.getElementById('floatingSelect');
+        const selectedOption = selectElement.options[selectElement.selectedIndex].value;
+        let imageHeight;
+        switch (selectedOption) {
+          case '1':
+            imageHeight = 512; // Landscape
+            break;
+          case '2':
+            imageHeight = 512; // Square
+            break;
+          case '3':
+            imageHeight = 768; // Portrait
+            break;
+          default:
+            imageHeight = 768;
+        }
+        return imageHeight;
+      };
       const payload = {
         "prompt": document.getElementById('prompt-input').value,
         "steps": 20,
         "negative_prompt": document.getElementById('formGroupExampleInput').value || "EasyNegative, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, pubic hair, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2",
         "seed": Number(document.getElementById('seedInput').value) || -1,
         "cfg_scale": Number(document.getElementById('customRange1').value) || 7,
-        "batch_size": 4
+        "batch_size": 4,
+        "save_images": true,
+        "width": getImageWidth() || 512,
+        "height": getImageHeight() || 768,
       }
 
       // Call auto1111 API
@@ -429,10 +537,10 @@
         clearInterval(queueInterval);
 
         // Set the src attribute of the image elements to the base64-encoded images
-        document.getElementById('img-top-left').src = 'data:image/png;base64,' + base64Images[0];
-        document.getElementById('img-top-right').src = 'data:image/png;base64,' + base64Images[1];
-        document.getElementById('img-bottom-left').src = 'data:image/png;base64,' + base64Images[2];
-        document.getElementById('img-bottom-right').src = 'data:image/png;base64,' + base64Images[3];
+        document.getElementById('img-top-left').src = 'data:image/png;base64,' + base64Images[1];
+        document.getElementById('img-top-right').src = 'data:image/png;base64,' + base64Images[2];
+        document.getElementById('img-bottom-left').src = 'data:image/png;base64,' + base64Images[3];
+        document.getElementById('img-bottom-right').src = 'data:image/png;base64,' + base64Images[4];
 
         // Unhide the images and enable generate button
         resetAllImageDisplays();
