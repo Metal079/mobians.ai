@@ -4,7 +4,7 @@
 
 <head>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4467857259742793"
-     crossorigin="anonymous"></script>
+    crossorigin="anonymous"></script>
   <meta charset="UTF-8">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
@@ -142,6 +142,27 @@
     .card-body {
       background-color: #2fa5e9;
     }
+
+    .expanded-image {
+      grid-column: 1 / -1;
+      grid-row: 1 / -1;
+      z-index: 10;
+      transition: all 0.5s ease;
+      object-fit: cover;
+      /* Add this */
+    }
+
+
+    .close-button {
+      display: none;
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 10px;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 2;
+    }
   </style>
 </head>
 
@@ -174,6 +195,7 @@
   <!-- Image box for generations -->
   <div class="content-container">
     <div class="image-grid image-container image-grid-mobile">
+
       <!-- Loading container -->
       <div id="loading-container" class="d-none">
         <!-- Loading bar -->
@@ -186,11 +208,33 @@
         </div>
       </div>
 
-      <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
-      <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
-      <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
-      <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'">
+      <div class="image-wrapper" style="position: relative;">
+        <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
+          onclick="expandImage('img-top-left', 'close-button-top-left')">
+        <span id="close-button-top-left" class="close-button"
+          onclick="collapseImage('img-top-left', 'close-button-top-left')">&times;</span>
+      </div>
+      <div class=" image-wrapper" style="position: relative;">
+        <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
+          onclick="expandImage('img-top-right', 'close-button-top-right')">
+        <span id="close-button-top-right" class="close-button"
+          onclick="collapseImage('img-top-right', 'close-button-top-right')">&times;</span>
+      </div>
+      <div class="image-wrapper" style="position: relative;">
+        <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
+          onclick="expandImage('img-bottom-left', 'close-button-bottom-left')">
+        <span id="close-button-bottom-left" class="close-button"
+          onclick="collapseImage('img-bottom-left', 'close-button-bottom-left')">&times;</span>
+      </div>
+      <div class="image-wrapper" style="position: relative;">
+        <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
+          onclick="expandImage('img-bottom-right', 'close-button-bottom-right')">
+        <span id="close-button-bottom-right" class="close-button"
+          onclick="collapseImage('img-bottom-right', 'close-button-bottom-right')">&times;</span>
+      </div>
+
     </div>
+
 
     <!-- Prompt input box and advanced options button -->
     <div class="input-button-container">
@@ -362,6 +406,71 @@
   </div>
 
   <script>
+
+    let expanded = false;
+    let currentImage = null;
+
+    function expandImage(imageId, closeButtonId) {
+      // Hide all except selected image
+      switch (imageId) {
+        case 'img-top-left':
+          document.getElementById('img-top-right').style.display = 'none';
+          document.getElementById('img-bottom-left').style.display = 'none';
+          document.getElementById('img-bottom-right').style.display = 'none';
+          break;
+
+        case 'img-top-right':
+          document.getElementById('img-top-left').style.display = 'none';
+          document.getElementById('img-bottom-left').style.display = 'none';
+          document.getElementById('img-bottom-right').style.display = 'none';
+          break;
+
+        case 'img-bottom-left':
+          document.getElementById('img-top-left').style.display = 'none';
+          document.getElementById('img-top-right').style.display = 'none';
+          document.getElementById('img-bottom-right').style.display = 'none';
+          break;
+
+        case 'img-bottom-right':
+          document.getElementById('img-top-left').style.display = 'none';
+          document.getElementById('img-top-right').style.display = 'none';
+          document.getElementById('img-bottom-left').style.display = 'none';
+          break;
+      }
+
+      if (expanded) return;
+      expanded = true;
+
+      const image = document.getElementById(imageId);
+      const closeButton = document.getElementById(closeButtonId);
+
+      image.classList.add('expanded-image');
+      closeButton.style.display = 'block';
+
+      currentImage = image;
+
+      // Set the width and height of the expanded image to match the container
+      image.style.width = 'auto';
+      image.style.height = 'auto';
+    }
+
+    function collapseImage(imageId, closeButtonId) {
+      if (!expanded) return;
+      expanded = false;
+
+      const image = document.getElementById(imageId);
+      const closeButton = document.getElementById(closeButtonId);
+
+      image.classList.remove('expanded-image');
+      closeButton.style.display = 'none';
+
+      // Reset the width and height of the collapsed image
+      currentImage.style.width = '';
+      currentImage.style.height = '';
+
+      resetAllImageDisplays();
+    }
+
     // Allows us to see the images that are generated
     const resetImageDisplay = (imageId) => {
       const imageElement = document.getElementById(imageId);
