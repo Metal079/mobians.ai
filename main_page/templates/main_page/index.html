@@ -32,10 +32,6 @@
   <title>The best Sonic OC generator </title>
   <style>
     /* Add the following styles */
-    html {
-      font-size: 16px;
-    }
-
     input[type="text"],
     select.form-select {
       font-size: 1rem;
@@ -47,7 +43,6 @@
       height: 100%;
       object-fit: contain;
     }
-
 
     .image-container {
       justify-content: center;
@@ -67,7 +62,7 @@
       border: 1px solid #3880ec;
       border-radius: 10px;
       background-color: #3880ec;
-      position: static;
+      position: relative;
       gap: 4px;
       overflow: hidden;
       gap: 0;
@@ -146,19 +141,18 @@
       z-index: 10;
       transition: all 0.5s ease;
       object-fit: cover;
-      /* Add this */
     }
 
-
-    .close-button {
+    #close-button {
       display: none;
       position: absolute;
       top: 0;
-      right: 0;
-      /* padding: 10px; */
+      left: 0;
+      padding: 10px;
       font-size: 24px;
       cursor: pointer;
       z-index: 2;
+      object-fit: none;
     }
 
     .FAQ {
@@ -173,7 +167,7 @@
 
       .image-container {
         flex-grow: 1;
-        width: 100%;
+        width: 100vw;
       }
 
       .input-button-container {
@@ -191,6 +185,14 @@
         padding-bottom: 5%;
       }
 
+      /* #advanced-options {
+        width: 100vw;
+        height: 20vw;
+        flex-grow: 1;
+        margin-left: auto;
+        margin-right: auto;
+      } */
+
       .image-grid-mobile {
         width: 100vw;
         height: 150vw;
@@ -198,6 +200,8 @@
         max-height: max-content;
         aspect-ratio: 1 / 1;
         margin-left: 0%;
+        margin-right: 0%;
+        border: 0;
       }
 
       .FAQ {
@@ -216,7 +220,11 @@
 <body>
   <!-- Image box for generations -->
   <div class="content-container">
+
     <div class="image-grid image-container image-grid-mobile">
+      <!-- close button -->
+      <button type="button" class="btn-close" aria-label="Close" id="close-button"
+        onclick="collapseImage('close-button')"></button>
 
       <!-- Loading container -->
       <div id="loading-container" class="d-none">
@@ -230,31 +238,23 @@
         </div>
       </div>
 
+      <!-- Images -->
       <div class="image-wrapper" style="position: relative;">
         <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-          onclick="expandImage('img-top-left', 'close-button-top-left')">
-        <span id="close-button-top-left" class="close-button"
-          onclick="collapseImage('img-top-left', 'close-button-top-left')">&times;</span>
+          onclick="expandImage('img-top-left', 'close-button')">
       </div>
       <div class=" image-wrapper" style="position: relative;">
         <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-          onclick="expandImage('img-top-right', 'close-button-top-right')">
-        <span id="close-button-top-right" class="close-button"
-          onclick="collapseImage('img-top-right', 'close-button-top-right')">&times;</span>
+          onclick="expandImage('img-top-right', 'close-button')">
       </div>
       <div class="image-wrapper" style="position: relative;">
         <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-          onclick="expandImage('img-bottom-left', 'close-button-bottom-left')">
-        <span id="close-button-bottom-left" class="close-button"
-          onclick="collapseImage('img-bottom-left', 'close-button-bottom-left')">&times;</span>
+          onclick="expandImage('img-bottom-left', 'close-button')">
       </div>
       <div class="image-wrapper" style="position: relative;">
         <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-          onclick="expandImage('img-bottom-right', 'close-button-bottom-right')">
-        <span id="close-button-bottom-right" class="close-button"
-          onclick="collapseImage('img-bottom-right', 'close-button-bottom-right')">&times;</span>
+          onclick="expandImage('img-bottom-right', 'close-button')">
       </div>
-
     </div>
 
 
@@ -264,16 +264,6 @@
         <input type="text" class="form-control" placeholder="Enter Prompt" aria-label="Enter Prompt"
           aria-describedby="button-addon2" id="prompt-input">
         <button class="btn btn-primary" type="button" id="button-addon2">Generate!</button>
-
-        <div class="form-floating">
-          <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
-            onchange="changeAspectRatio()">
-            <option value="3">Portrait</option>
-            <option value="1">Landscape</option>
-            <option value="2">Square</option>
-          </select>
-          <label for="floatingSelect">Image aspect-ratio</label>
-        </div>
       </div>
 
       <div id="advanced-options">
@@ -282,6 +272,14 @@
           Advanced Options
         </button>
         <div class="collapse w-100" id="collapseExample">
+          <label for="floatingSelect">Image aspect-ratio</label>
+          <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
+            onchange="changeAspectRatio()">
+            <option value="3">Portrait</option>
+            <option value="1">Landscape</option>
+            <option value="2">Square</option>
+          </select>
+
           <div class="card card-body">
             <!-- Negative Prompt -->
             <div class="mb-3">
@@ -432,8 +430,12 @@
   <script>
     let expanded = false;
     let currentImage = null;
+    let expanded_image_id = null;
 
     function expandImage(imageId, closeButtonId) {
+      if (expanded) return;
+      expanded = true;
+
       // Hide all except selected image
       switch (imageId) {
         case 'img-top-left':
@@ -461,9 +463,7 @@
           break;
       }
 
-      if (expanded) return;
-      expanded = true;
-
+      expanded_image_id = imageId;
       const image = document.getElementById(imageId);
       const closeButton = document.getElementById(closeButtonId);
 
@@ -472,16 +472,22 @@
 
       currentImage = image;
 
-      // Set the width and height of the expanded image to match the container
-      image.style.width = 'auto';
-      image.style.height = 'auto';
+      // Set the width and height of the expanded image to match the container depending on if on mobile or not
+      if (window.innerWidth < 1000) {
+        image.style.width = '100vw';
+        image.style.height = 'auto%';
+      } else {
+        image.style.width = 'auto';
+        image.style.height = 'auto';
+      }
+
     }
 
-    function collapseImage(imageId, closeButtonId) {
+    function collapseImage(closeButtonId) {
       if (!expanded) return;
       expanded = false;
 
-      const image = document.getElementById(imageId);
+      const image = document.getElementById(expanded_image_id);
       const closeButton = document.getElementById(closeButtonId);
 
       image.classList.remove('expanded-image');
@@ -586,56 +592,47 @@
       // Fetch user's position in the queue periodically
       document.getElementById("queue-position").innerText = `Generating Image... Please wait`;
 
-      // Get the prompt from the input element
-      const getImageWidth = () => {
-        const selectElement = document.getElementById('floatingSelect');
-        const selectedOption = selectElement.options[selectElement.selectedIndex].value;
-        let imageWidth;
-        switch (selectedOption) {
-          case '1':
-            imageWidth = 768; // Landscape
-            break;
-          case '2':
-            imageWidth = 512; // Square
-            break;
-          case '3':
-            imageWidth = 512; // Portrait
-            break;
-          default:
-            imageWidth = 512;
-        }
-        return imageWidth;
-      };
+      // Set the width and height of the expanded image to match the container
+      let imageWidth;
+      let imageHeight;
+      let model;
 
-      const getImageHeight = () => {
-        const selectElement = document.getElementById('floatingSelect');
-        const selectedOption = selectElement.options[selectElement.selectedIndex].value;
-        let imageHeight;
-        switch (selectedOption) {
-          case '1':
-            imageHeight = 512; // Landscape
-            break;
-          case '2':
-            imageHeight = 512; // Square
-            break;
-          case '3':
-            imageHeight = 768; // Portrait
-            break;
-          default:
-            imageHeight = 768;
-        }
-        return imageHeight;
-      };
+      const selectElement = document.getElementById('floatingSelect');
+      const selectedOption = selectElement.options[selectElement.selectedIndex].value;
+      switch (selectedOption) {
+        case '1':
+          imageWidth = 768; // Landscape
+          imageHeight = 512;
+          break;
+        case '2':
+          imageWidth = 512;
+          imageHeight = 512; // Square
+          break;
+        case '3':
+          imageWidth = 512; // Portrait
+          imageHeight = 768;
+          model = "Metal079--SonicDiffusionV3-Beta__512x768x4"
+          break;
+        default:
+          imageWidth = 512;
+          imageHeight = 768;
+          model = "Metal079--SonicDiffusionV3-Beta__512x768x4"
+      }
+
       const payload = {
-        "prompt": document.getElementById('prompt-input').value,
-        "steps": 20,
-        "negative_prompt": document.getElementById('formGroupExampleInput').value || "EasyNegative, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, pubic hair, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2",
-        "seed": Number(document.getElementById('seedInput').value) || -1,
-        "cfg_scale": Number(document.getElementById('customRange1').value) || 7,
-        "batch_size": 4,
-        "save_images": true,
-        "width": getImageWidth() || 512,
-        "height": getImageHeight() || 768,
+        "data": {
+          "prompt": document.getElementById('prompt-input').value,
+          "steps": 20,
+          "negative_prompt": document.getElementById('formGroupExampleInput').value || "EasyNegative, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, pubic hair, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2",
+          "seed": Number(document.getElementById('seedInput').value) || -1,
+          "cfg_scale": Number(document.getElementById('customRange1').value) || 7,
+          "batch_size": 4,
+          "save_images": true,
+          "width": imageWidth || 512,
+          "height": imageHeight || 768,
+          "scheduler": 1,
+        },
+        "model": model
       }
 
       // Call auto1111 API
