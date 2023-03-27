@@ -402,11 +402,9 @@
       </div>
     </div>
   </div>
-
   </div>
 
   <script>
-
     let expanded = false;
     let currentImage = null;
 
@@ -545,8 +543,6 @@
       hideAllImages();
     };
 
-
-
     document.getElementById('customRange1').addEventListener('input', function (event) {
       document.getElementById('cfg-value').textContent = event.target.value;
     });
@@ -562,10 +558,7 @@
       // Show loading bar
       document.getElementById("loading-container").classList.remove("d-none");
       // Fetch user's position in the queue periodically
-      let queueRequestInProgress = false;
-      fetchQueuePosition();
-      queueInterval = setInterval(fetchQueuePosition, 500); // Fetches position every 1 seconds
-
+      document.getElementById("queue-position").innerText = `Generating Image... Please wait`;
 
       // Get the prompt from the input element
       const getImageWidth = () => {
@@ -628,8 +621,6 @@
         body: JSON.stringify(payload)
       });
 
-
-
       // Handle the API response
       if (response.ok) {
         const data = await response.json(); // Parse the JSON response
@@ -637,7 +628,6 @@
 
         // When the image is retrieved, hide the loading bar and queue
         document.getElementById("loading-container").classList.add("d-none");
-        clearInterval(queueInterval);
 
         // Set the src attribute of the image elements to the base64-encoded images
         document.getElementById('img-top-left').src = 'data:image/jpg;base64,' + base64Images[0];
@@ -651,28 +641,6 @@
       } else {
         console.error(`Error: ${response.status}`); // Handle the error
       }
-
-      async function fetchQueuePosition() {
-        if (queueRequestInProgress) {
-          return
-        }
-
-        // Set the flag to true indicating a request is in progress
-        queueRequestInProgress = true;
-
-        try {
-          const response = await fetch('/get_position/');
-          const data = await response.json();
-          const position = data.position;
-          document.getElementById("queue-position").innerText = `Position in queue: ${position}`;
-        } catch (error) {
-          console.error('Error fetching queue position:', error);
-        } finally {
-          // Set the flag to false indicating the request has completed
-          queueRequestInProgress = false;
-        }
-      }
-
     });
 
   </script>

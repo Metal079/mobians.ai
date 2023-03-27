@@ -47,57 +47,7 @@ def process_json(request):
             img_io.seek(0)
             base64_images.append(base64.b64encode(img_io.getvalue()).decode('utf-8'))
 
-        print(queue)
-        remove_user_from_queue(request.session.session_key)
         return JsonResponse({'images': base64_images})
     else:
         return JsonResponse({'error': 'Invalid request method'})
-    
-@csrf_exempt
-def image_test_square(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
 
-        # Process the data here
-        # For example, let's assume you have a key called "image_name" in the JSON data
-        image_name = data.get('image_name', 'default_image_name')
-
-        # Construct the image URL using Django's static files
-        image_url_1 = static(f'main_page/sonic.png')
-        image_url_2 = static(f'main_page/{image_name}.jpg')
-        image_url_3 = static(f'main_page/knuckles.png')
-        image_url_4 = static(f'main_page/amy.jpg')
-
-        result = {'image_urls': [image_url_1, image_url_2, image_url_3, image_url_4]}
-        return JsonResponse(result)
-    else:
-        return JsonResponse({'error': 'Invalid request method'})
-    
-
-# Queue for image generation
-queue_lock = Lock()
-queue = []
-
-def get_position(request):
-    global queue
-
-    # Ensure that the session is created and the session key is generated
-    if not request.session.session_key:
-        request.session.save()
-
-    user_id = request.session.session_key
-    print(queue)
-
-    with queue_lock:
-        if user_id not in queue:
-            queue.append(user_id)
-        position = queue.index(user_id)
-
-    return JsonResponse({'position': position + 1})  # Position is 0-indexed, so we add 1
-
-# Remember to remove the user from the queue when the image generation is done
-def remove_user_from_queue(user_id):
-    global queue
-    with queue_lock:
-        if user_id in queue:
-            queue.remove(user_id)
