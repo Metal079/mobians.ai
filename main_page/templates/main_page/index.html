@@ -160,7 +160,7 @@
       padding: 5vw;
     }
 
-    @media (max-width: 1000px) {
+    @media (max-width: 480px) {
       .content-container {
         flex-direction: column;
         padding: 0%;
@@ -199,12 +199,22 @@
 
       .FAQ {
         padding: 0vw;
-        width: 100vw;
+        width: 95vw;
         padding-top: 10vh;
       }
 
       .row {
         width: 100vw;
+      }
+
+      .card-body {
+        padding-right: 0;
+        padding-left: 0;
+      }
+
+      .mb-0 {
+        padding-left: 2vw;
+        padding-right: 2vw;
       }
     }
   </style>
@@ -398,7 +408,8 @@
               </h5>
             </div>
             <div class="card-body">
-              <p class="mb-0">CFG refers to how closely a image tries follow to a prompt, too high values may fry images, while
+              <p class="mb-0">CFG refers to how closely a image tries follow to a prompt, too high values may fry
+                images, while
                 too low of a value will result in a random mess of a photo being generated. By default 7 is used but
                 this can be experimented with</p>
             </div>
@@ -426,8 +437,9 @@
                 had the mind to express themselves artistically, AI art has opened up a whole new world for me and I'd
                 like to be able to share that openly for every sonic fan to express themselves!
 
-              <p><p></p>
-
+              <p>
+              <p></p>
+              <p class="mb-0">
                 Hosting a website and AI model isn't cheap, especially as the user base grows and hardware requirements
                 go up so I'm hoping to be able to keep this site up as long as I'm financially able to.
               </p>
