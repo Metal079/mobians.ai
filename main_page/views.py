@@ -36,12 +36,6 @@ def process_json(request):
             image = Image.open(io.BytesIO(base64.b64decode(i.split(",", 1)[0])))
             img_io = io.BytesIO()
 
-            #png_payload = {"image": "data:image/png;base64," + i}
-            #response2 = requests.post(url=f'{AUTO1111_API_IP}/sdapi/v1/png-info', json=png_payload)
-
-            #pnginfo = PngImagePlugin.PngInfo()
-            #pnginfo.add_text("parameters", response2.json().get("info"))
-
             image.save(img_io, "PNG")
             img_io.seek(0)
             base64_images.append(base64.b64encode(img_io.getvalue()).decode('utf-8'))
