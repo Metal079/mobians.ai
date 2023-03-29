@@ -1,4 +1,4 @@
-<!-- index.html -->
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,7 +29,8 @@
     crossorigin="anonymous"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name='description' content='Sonic AI art generator, OC maker, mobian maker'>
+  <meta name='description' content='Sonic AI art generator, OC maker, mobian maker, sonic maker, mobian OC'>
+  <link rel="shortcut icon" href="{% static 'main_page/favicon.ico' %}">
   <title>The best Sonic OC generator </title>
   <style>
     /* Add the following styles */
@@ -45,13 +46,9 @@
       object-fit: contain;
     }
 
-    .image-container {
+    .image-grid {
       justify-content: center;
       align-items: center;
-      position: relative;
-    }
-
-    .image-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-template-rows: 1fr 1fr;
@@ -95,6 +92,14 @@
       padding-bottom: 10px;
     }
 
+    #prompt-input {
+      height: 5vh;
+    }
+
+    #button-addon2 {
+      height: 5vh;
+    }
+
     .content-container {
       display: flex;
       align-items: flex-start;
@@ -105,6 +110,7 @@
     #advanced-options {
       padding-left: 10px;
       z-index: 1;
+      width: 5in;
     }
 
     .input-button-container {
@@ -140,7 +146,7 @@
       grid-column: 1 / -1;
       grid-row: 1 / -1;
       z-index: 10;
-      transition: all 0.5s ease;
+      transition: all 0.5s ease-in-out;
       object-fit: cover;
     }
 
@@ -160,33 +166,26 @@
       padding: 5vw;
     }
 
+    #instructions {
+      position: relative;
+      top: 50%;
+      left: 50%;
+      text-align: center;
+      z-index: 1;
+      opacity: 70%;
+    }
+
+    #queue-position {
+      opacity: 70%;
+    }
+
     @media (max-width: 480px) {
       .content-container {
         flex-direction: column;
         padding: 0%;
       }
 
-      .image-container {
-        flex-grow: 1;
-        width: 100vw;
-      }
-
-      .input-button-container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        width: 100vw;
-        height: 20vw;
-        flex-grow: 1;
-        padding-left: 0;
-        padding-bottom: 5%;
-      }
-
-      #prompt-input-box {
-        padding-bottom: 5%;
-      }
-
-      .image-grid-mobile {
+      .image-grid {
         width: 100vw;
         height: 150vw;
         max-width: max-content;
@@ -197,10 +196,29 @@
         border: 0;
       }
 
+      .input-button-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100vw;
+        flex-grow: 1;
+        padding-left: 0;
+        padding-bottom: 5%;
+        height:auto;
+      }
+
+      #advanced-options {
+        width: 97vw;
+      }
+
+      #prompt-input-box {
+        padding-bottom: 5%;
+        padding-left: 0;
+      }
+
       .FAQ {
         padding: 0vw;
         width: 95vw;
-        padding-top: 10vh;
       }
 
       .row {
@@ -225,11 +243,13 @@
 
   <!-- Image box for generations -->
   <div class="content-container">
-
-    <div class="image-grid image-container image-grid-mobile">
+    <div class="image-grid">
       <!-- close button -->
       <button type="button" class="btn-close" aria-label="Close" id="close-button"
         onclick="collapseImage('close-button')"></button>
+
+      <!-- Prompt instructions -->
+      <div id="instructions">Type a prompt and hit generate to start!</div>
 
       <!-- Loading container -->
       <div id="loading-container" class="d-none">
@@ -238,7 +258,7 @@
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Generating images...</span>
           </div>
-          <!-- Position in queue -->
+          <!-- Loading text -->
           <div id="queue-position"></div>
         </div>
       </div>
@@ -261,7 +281,6 @@
           onclick="expandImage('img-bottom-right', 'close-button')">
       </div>
     </div>
-
 
     <!-- Prompt input box and advanced options button -->
     <div class="input-button-container">
@@ -440,7 +459,8 @@
               <p>
               <p></p>
               <p class="mb-0">
-                I'm hoping to be able to keep this site up as long as I'm financially able to, but as the site grows more popular it will be hard to keep up with GPU demand and server cost,
+                I'm hoping to be able to keep this site up as long as I'm financially able to, but as the site grows
+                more popular it will be hard to keep up with GPU demand and server cost,
                 so any support is greatly appreciated!
               </p>
               <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
@@ -506,7 +526,7 @@
       currentImage = image;
 
       // Set the width and height of the expanded image to match the container depending on if on mobile or not
-      if (window.innerWidth < 1000) {
+      if (window.innerWidth < 480) {
         image.style.width = '100vw';
         image.style.height = 'auto%';
       } else {
@@ -560,26 +580,25 @@
       const selectElement = document.getElementById('floatingSelect');
       const selectedOption = selectElement.options[selectElement.selectedIndex].value;
       const imageGrid = document.querySelector('.image-grid');
-      const imageGrid_mobile = document.querySelector('.image-grid-mobile');
       let isMobileView = window.matchMedia('(max-width: 1200px)').matches;
 
       switch (selectedOption) {
         case '1':
           // Landscape
           if (isMobileView) {
-            imageGrid_mobile.style.width = '100vw';
-            imageGrid_mobile.style.height = '66vw';
-            imageGrid_mobile.style.aspectRatio = '2/1';
+            imageGrid.style.width = '100vw';
+            imageGrid.style.height = '66vw';
+            imageGrid.style.aspectRatio = '2/1';
           } else {
-            imageGrid.style.width = '768px';
-            imageGrid.style.height = '512px';
+            imageGrid.style.width = '691px';
+            imageGrid.style.height = '460px';
           }
           break;
         case '2':
           // Square
           if (isMobileView) {
-            imageGrid_mobile.style.width = '100vw';
-            imageGrid_mobile.style.height = '100vw';
+            imageGrid.style.width = '100vw';
+            imageGrid.style.height = '100vw';
           } else {
             imageGrid.style.width = '512px';
             imageGrid.style.height = '512px';
@@ -588,8 +607,8 @@
         case '3':
           // Portrait
           if (isMobileView) {
-            imageGrid_mobile.style.width = '100vw';
-            imageGrid_mobile.style.height = '150vw';
+            imageGrid.style.width = '100vw';
+            imageGrid.style.height = '150vw';
           } else {
             imageGrid.style.width = '512px';
             imageGrid.style.height = '768px';
@@ -597,8 +616,8 @@
           break;
         default:
           if (isMobileView) {
-            imageGrid_mobile.style.width = '1024px';
-            imageGrid_mobile.style.height = '1536px';
+            imageGrid.style.width = '1024px';
+            imageGrid.style.height = '1536px';
           } else {
             imageGrid.style.width = '512px';
             imageGrid.style.height = '768px';
@@ -621,6 +640,7 @@
       hideAllImages();
 
       // Show loading bar
+      document.getElementById("instructions").classList.add("d-none");
       document.getElementById("loading-container").classList.remove("d-none");
       // Fetch user's position in the queue periodically
       document.getElementById("queue-position").innerText = `Generating Image... Please wait`;
