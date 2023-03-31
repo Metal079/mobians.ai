@@ -506,20 +506,8 @@
   </div>
 
   <script>
-    function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== "") {
-        const cookies = document.cookie.split("; ");
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.substring(0, name.length + 1) === name + "=") {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-          }
-        }
-      }
-      return cookieValue;
-    }
+    // Set mode
+    let mode = 'txt2img';
 
     // This is the JavaScript code for the image upload
     const imageGrid = document.querySelector(".image-grid");
@@ -581,6 +569,7 @@
 
           // Get the base64 string from the data URL
           base64Str = e.target.result.split(",")[1];
+          mode = 'img2img';
         };
         reader.readAsDataURL(imageFile);
       }
@@ -788,7 +777,6 @@
           model = "Metal079--SonicDiffusionV3-Beta__512x768x4"
       }
 
-      let mode = 'img2img'
       let payload;
       let response;
 
@@ -848,7 +836,9 @@
           break;
       }
 
-
+      // Set back to txt2img mode
+      mode = 'txt2img';
+      
       // Handle the API response
       if (response.ok) {
         const data = await response.json(); // Parse the JSON response
