@@ -305,7 +305,7 @@
       <!--Denoise strength-->
       <div id="denoise-strength">
         <label for="customRange1" class="form-label">Strength: <span id="denoise-value">0.6</span></label>
-        <input type="range" class="form-range" min="0.1" max="1" step="0.1">
+        <input type="range" class="form-range" min="0.1" max="1" step="0.1" id="custom-denoise">
       </div>
 
       <!-- Advanced options -->
@@ -832,7 +832,7 @@
               "width": imageWidth || 512,
               "height": imageHeight || 768,
               "scheduler": 13,
-              "strength": document.getElementById('denoise-strength').value || 0.6
+              "strength": document.getElementById('custom-denoise').value || 0.6
             },
             "model": model
           }
