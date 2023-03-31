@@ -838,7 +838,9 @@
 
       // Set back to txt2img mode
       mode = 'txt2img';
-      
+      const denoiseStrength = document.getElementById("denoise-strength");
+      denoiseStrength.style.display = 'none'
+
       // Handle the API response
       if (response.ok) {
         const data = await response.json(); // Parse the JSON response
