@@ -4,6 +4,6 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('process_json', views.process_json, name='process_json'),
-    path('img2img', views.img2img, name='img2img'),
+    path('txt2img/', views.txt2img, name='txt2img'),
+    path('img2img/', views.img2img, name='img2img'),
 ]

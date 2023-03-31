@@ -179,6 +179,10 @@
       opacity: 70%;
     }
 
+    #denoise-strength {
+      display: none;
+    }
+
     @media (max-width: 480px) {
       .content-container {
         flex-direction: column;
@@ -234,6 +238,11 @@
         padding-left: 2vw;
         padding-right: 2vw;
       }
+
+      #denoise-strength {
+        padding: 2vw;
+        width: 100vw;
+      }
     }
   </style>
 </head>
@@ -243,13 +252,16 @@
 
   <!-- Image box for generations -->
   <div class="content-container">
-    <div class="image-grid">
+    <div class="image-grid" ondragover="allowDrop(event)" ondrop="handleDrop(event)">
+      <!-- Upload images -->
+      <input type="file" name="image" id="image-upload" accept="image/*" style="display: none;">
+
       <!-- close button -->
       <button type="button" class="btn-close" aria-label="Close" id="close-button"
         onclick="collapseImage('close-button')"></button>
 
       <!-- Prompt instructions -->
-      <div id="instructions">Type a prompt and hit generate to start!</div>
+      <div id="instructions">Type a prompt and hit generate to start! Or click/grab an image to use as a reference!</div>
 
       <!-- Loading container -->
       <div id="loading-container" class="d-none">
@@ -290,6 +302,13 @@
         <button class="btn btn-primary" type="button" id="button-addon2">Generate!</button>
       </div>
 
+      <!--Denoise strength-->
+      <div id="denoise-strength">
+        <label for="customRange1" class="form-label">Strength: <span id="denoise-value">0.6</span></label>
+        <input type="range" class="form-range" min="0.1" max="1" step="0.1">
+      </div>
+
+      <!-- Advanced options -->
       <div id="advanced-options">
         <button class="btn btn-primary dropdown-toggle" data-bs-toggle="collapse" href="#collapseExample" role="button"
           aria-expanded="false" aria-controls="collapseExample">
@@ -341,12 +360,13 @@
             </div>
             <div class="card-body">
               <p class="mb-0">Make sure to include their full name when generating
-                for best results! EX: Sonic -> 'Sonic the hedgehog', Tails -> 'Tails the fox'. 
-                
-                <p>
-                  
+                for best results! EX: Sonic -> 'Sonic the hedgehog', Tails -> 'Tails the fox'.
+
+              <p>
+
                 The model was trained on
-                booru tags, using them allows you make your image much for specific.</p></p>
+                booru tags, using them allows you make your image much for specific.</p>
+              </p>
             </div>
           </div>
           <div class="card mt-3">
@@ -456,7 +476,8 @@
               </h5>
             </div>
             <div class="card-body">
-              <p class="mb-0">Hi there! I'm a big fan of AI and Sonic, so I thought why not combine the two? As someone who never
+              <p class="mb-0">Hi there! I'm a big fan of AI and Sonic, so I thought why not combine the two? As someone
+                who never
                 had the mind to express themselves artistically, AI art has opened up a whole new world for me and I'd
                 like to be able to share that openly for every sonic fan to express themselves!
 
@@ -485,6 +506,87 @@
   </div>
 
   <script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split("; ");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === name + "=") {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    // This is the JavaScript code for the image upload
+    const imageGrid = document.querySelector(".image-grid");
+    const imageInput = document.getElementById("image-upload");
+
+    function handleImageGridClick() {
+      imageInput.click();
+    }
+
+    function handleImageInputChange() {
+      if (imageInput.files.length === 0) {
+        return;
+      }
+      handleImageSelect({ target: { files: imageInput.files } });
+    }
+
+
+    imageGrid.addEventListener("click", handleImageGridClick);
+
+    imageInput.addEventListener("change", handleImageInputChange);
+
+    function allowDrop(event) {
+      event.preventDefault();
+    }
+
+    function drop(event) {
+      event.preventDefault();
+      if (event.dataTransfer.items) {
+        for (let i = 0; i < event.dataTransfer.items.length; i++) {
+          if (event.dataTransfer.items[i].kind === "file") {
+            const imageFile = event.dataTransfer.items[i].getAsFile();
+            handleImageSelect({ target: { files: [imageFile] } });
+          }
+        }
+      } else {
+        for (let i = 0; i < event.dataTransfer.files.length; i++) {
+          handleImageSelect({ target: { files: [event.dataTransfer.files[i]] } });
+        }
+      }
+    }
+
+    var base64Str;
+    function handleImageSelect(event) {
+      const closeButton = document.getElementById("close-button");
+      const denoiseStrength = document.getElementById("denoise-strength");
+      const imageFile = event.target.files[0];
+      if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          // Set the image source to the data URL
+          document.getElementById("img-top-left").src = e.target.result;
+
+          // UI stuff
+          document.getElementById("instructions").classList.add("d-none");
+          expandImage("img-top-left", "close-button")
+          document.getElementById('img-top-left').style.display = 'block';
+          closeButton.style.display = "none";
+          denoiseStrength.style.display = 'block'
+
+          // Get the base64 string from the data URL
+          base64Str = e.target.result.split(",")[1];
+        };
+        reader.readAsDataURL(imageFile);
+      }
+    }
+
+    // Expand image on click
     let expanded = false;
     let currentImage = null;
     let expanded_image_id = null;
@@ -631,8 +733,12 @@
       hideAllImages();
     };
 
+    // Dynamic changing of CFG and denoise sliders when moved
     document.getElementById('customRange1').addEventListener('input', function (event) {
       document.getElementById('cfg-value').textContent = event.target.value;
+    });
+    document.getElementById('denoise-strength').addEventListener('input', function (event) {
+      document.getElementById('denoise-value').textContent = event.target.value;
     });
 
     // Send the request to the server for generated images
@@ -648,6 +754,10 @@
       document.getElementById("loading-container").classList.remove("d-none");
       // Fetch user's position in the queue periodically
       document.getElementById("queue-position").innerText = `Generating Image... Please wait`;
+
+      // Remove the event listeners
+      imageGrid.removeEventListener("click", handleImageGridClick);
+      imageInput.removeEventListener("change", handleImageInputChange);
 
       // Set the width and height of the expanded image to match the container
       let imageWidth;
@@ -678,35 +788,72 @@
           model = "Metal079--SonicDiffusionV3-Beta__512x768x4"
       }
 
-      const payload = {
-        "data": {
-          "prompt": document.getElementById('prompt-input').value,
-          "steps": 20,
-          "negative_prompt": document.getElementById('formGroupExampleInput').value || "EasyNegative, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, pubic hair, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2",
-          "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
-          "cfg_scale": Number(document.getElementById('customRange1').value) || 7,
-          "batch_size": 4,
-          "save_images": true,
-          "width": imageWidth || 512,
-          "height": imageHeight || 768,
-          "scheduler": 7
-        },
-        "model": model
+      let mode = 'img2img'
+      let payload;
+      let response;
+
+      switch (mode) {
+        case 'txt2img':
+          payload = {
+            "data": {
+              "prompt": document.getElementById('prompt-input').value,
+              "steps": 20,
+              "negative_prompt": document.getElementById('formGroupExampleInput').value || "EasyNegative, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, pubic hair, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2",
+              "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
+              "cfg_scale": Number(document.getElementById('customRange1').value) || 7,
+              "batch_size": 4,
+              "width": imageWidth || 512,
+              "height": imageHeight || 768,
+              "scheduler": 7
+            },
+            "model": model
+          }
+
+          // Call Volta API
+          response = await fetch('txt2img/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+          break;
+
+        case 'img2img':
+          payload = {
+            "data": {
+              "prompt": document.getElementById('prompt-input').value,
+              "image": base64Str,
+              "steps": 20,
+              "negative_prompt": document.getElementById('formGroupExampleInput').value || "EasyNegative, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, pubic hair, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2",
+              "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
+              "cfg_scale": Number(document.getElementById('customRange1').value) || 7,
+              "batch_size": 4,
+              "width": imageWidth || 512,
+              "height": imageHeight || 768,
+              "scheduler": 13,
+              "strength": document.getElementById('denoise-strength').value || 0.6
+            },
+            "model": model
+          }
+
+          // Call Volta API
+          response = await fetch('img2img/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+          break;
       }
 
-      // Call auto1111 API
-      const response = await fetch('process_json', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
 
       // Handle the API response
       if (response.ok) {
         const data = await response.json(); // Parse the JSON response
         const base64Images = data.images;
+        const closeButton = document.getElementById("close-button");
 
         // When the image is retrieved, hide the loading bar and queue
         document.getElementById("loading-container").classList.add("d-none");
@@ -718,6 +865,7 @@
         document.getElementById('img-bottom-right').src = 'data:image/png;base64,' + base64Images[3];
 
         // Unhide the images and enable generate button
+        collapseImage("img-top-left", "close-button")
         resetAllImageDisplays();
         document.getElementById('button-addon2').disabled = false;
       } else {
