@@ -183,6 +183,10 @@
       display: none;
     }
 
+    #error-modal {
+      display: none;
+    }
+
     @media (max-width: 480px) {
       .content-container {
         flex-direction: column;
@@ -249,6 +253,22 @@
 
 <body>
   <!-- <h1>Sonic AI art generator, OC generator, mobian generator</h1> -->
+  <div class="modal" tabindex="-1" id="error-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">API Error</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>There was an API error, if using a reference image, refresh page and use one without transparency. If not, please check back later, backend may be down</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Image box for generations -->
   <div class="content-container">
@@ -261,7 +281,8 @@
         onclick="collapseImage('close-button')"></button>
 
       <!-- Prompt instructions -->
-      <div id="instructions">Type a prompt and hit generate to start! Or click/tap here to add an image to use as a reference!</div>
+      <div id="instructions">Type a prompt and hit generate to start! Or click/tap here to add an image to use as a
+        reference!</div>
 
       <!-- Loading container -->
       <div id="loading-container" class="d-none">
@@ -862,6 +883,8 @@
         document.getElementById('button-addon2').disabled = false;
       } else {
         console.error(`Error: ${response.status}`); // Handle the error
+        const error_modal = document.getElementById("error-modal");
+        error_modal.style.display = 'block'
       }
     });
 
