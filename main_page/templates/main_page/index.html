@@ -162,10 +162,6 @@
       object-fit: none;
     }
 
-    .FAQ {
-      padding: 5vw;
-    }
-
     #instructions {
       position: relative;
       top: 50%;
@@ -236,6 +232,7 @@
       .card-body {
         padding-right: 0;
         padding-left: 0;
+        padding-bottom: 0;
       }
 
       .mb-0 {
@@ -261,7 +258,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p>There was an API error, if using a reference image, refresh page and use one without transparency. If not, please check back later, backend may be down</p>
+          <p>There was an API error, if using a reference image, refresh page and use one without transparency. If not,
+            please check back later, backend may be down</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -323,10 +321,16 @@
         <button class="btn btn-primary" type="button" id="button-addon2">Generate!</button>
       </div>
 
-      <!--Denoise strength-->
+      <!-- Denoise strength -->
       <div id="denoise-strength">
-        <label for="customRange1" class="form-label">Strength: <span id="denoise-value">0.7</span></label>
-        <input type="range" class="form-range" min="0.1" max="1" step="0.1" id="custom-denoise">
+        <label for="custom-denoise" class="form-label">Strength: <span id="denoise-value">0.7</span>
+          <span class="ms-1 text-primary" data-bs-toggle="tooltip" data-bs-placement="top"
+            title="Adjust how much the source image should be followed. Lower values will follow the reference image more closely, higher values will change the image more. A value of 1 will ignore the reference image entirely."
+            style="background-color: rgba(255, 255, 255, 0.8); padding: 2px 4px; border-radius: 50%; cursor: pointer;">
+            ?
+          </span>
+        </label>
+        <input type="range" class="form-range" min="0.1" max="1" step="0.05" id="custom-denoise">
       </div>
 
       <!-- Advanced options -->
@@ -347,19 +351,40 @@
           <div class="card card-body">
             <!-- Negative Prompt -->
             <div class="mb-3">
-              <label for="formGroupExampleInput" class="form-label">Negative Prompt</label>
+              <label for="formGroupExampleInput" class="form-label">Negative Prompt
+                <span class="ms-1 text-primary" data-bs-toggle="tooltip" data-bs-placement="top"
+                  title="Add terms you want the AI to avoid when generating the image. Separate each term with a comma. By default a negative prompt is provided so this does not need to be modifed unless the below negative does not work well for you."
+                  style="background-color: rgba(255, 255, 255, 0.8); padding: 2px 4px; border-radius: 50%; cursor: pointer;">
+                  ?
+                </span>
+              </label>
+
               <input type="text" class="form-control" id="formGroupExampleInput"
                 placeholder="nsfw, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, signature, text, too many fingers, username, watermark,">
             </div>
 
             <!-- Seed -->
             <div class="mb-3">
-              <label for="formGroupExampleInput" class="form-label">Seed </label>
+              <label for="seedInput" class="form-label">Seed
+                <span class="ms-1 text-primary" data-bs-toggle="tooltip" data-bs-placement="top"
+                  title="Each generated image has a specific seed, if that seed is entered with the same prompt, 
+                you can regenerate the same or very similar images. By default a random seed is used with each generation."
+                  style="background-color: rgba(255, 255, 255, 0.8); padding: 2px 4px; border-radius: 50%; cursor: pointer;">
+                  ?
+                </span>
+              </label>
               <input type="text" class="form-control" id="seedInput" placeholder="-1">
             </div>
 
-            <!--CFG-->
-            <label for="customRange1" class="form-label">CFG: <span id="cfg-value">7</span></label>
+            <!-- CFG -->
+            <label for="customRange1" class="form-label">CFG: <span id="cfg-value">7</span>
+              <span class="ms-1 text-primary" data-bs-toggle="tooltip" data-bs-placement="top"
+                title="CFG refers to how closely a image tries follow to a prompt, too high values may fry 
+                images, while too low of a value will result in an unrelated photo being generated. By default 7 is used but this can be experimented with."
+                style="background-color: rgba(255, 255, 255, 0.8); padding: 2px 4px; border-radius: 50%; cursor: pointer;">
+                ?
+              </span>
+            </label>
             <input type="range" class="form-range" min="0" max="14" id="customRange1">
           </div>
         </div>
@@ -382,11 +407,8 @@
             <div class="card-body">
               <p class="mb-0">Make sure to include their full name when generating
                 for best results! EX: Sonic -> 'Sonic the hedgehog', Tails -> 'Tails the fox'.
-
-              <p>
-
-                The model was trained on
-                booru tags, using them allows you make your image much for specific.</p>
+              <p></p>
+              The model was trained on booru tags, using them allows you make your image much for specific.
               </p>
             </div>
           </div>
@@ -443,44 +465,6 @@
           <div class="card mt-3">
             <div class="card-header">
               <h5 class="mb-0">
-                What is a negative prompt?
-              </h5>
-            </div>
-            <div class="card-body">
-              <p class="mb-0">A negative prompt tells the model what it should avoid including in the picture. By
-                default
-                a decent negative prompt is added to the prompt, so this should avoid being changed unless you know what
-                you're doing.</p>
-            </div>
-          </div>
-          <div class="card mt-3">
-            <div class="card-header">
-              <h5 class="mb-0">
-                What is a seed?
-              </h5>
-            </div>
-            <div class="card-body">
-              <p class="mb-0">By default a random seed is sent when generating an image, this means if you send the
-                same prompt twice, you will get different results. If you set the seed to a specific value, you will
-                countinously get the same set of images.</p>
-            </div>
-          </div>
-          <div class="card mt-3">
-            <div class="card-header">
-              <h5 class="mb-0">
-                What is CFG?
-              </h5>
-            </div>
-            <div class="card-body">
-              <p class="mb-0">CFG refers to how closely a image tries follow to a prompt, too high values may fry
-                images, while
-                too low of a value will result in a random mess of a photo being generated. By default 7 is used but
-                this can be experimented with</p>
-            </div>
-          </div>
-          <div class="card mt-3">
-            <div class="card-header">
-              <h5 class="mb-0">
                 Can I run this locally on my PC?
               </h5>
             </div>
@@ -489,7 +473,6 @@
                   href="https://civitai.com/models/1493">https://civitai.com/models/1493</a></p>
             </div>
           </div>
-
           <div class="card mt-3">
             <div class="card-header">
               <h5 class="mb-0">
@@ -595,6 +578,14 @@
         reader.readAsDataURL(imageFile);
       }
     }
+
+    // Info buttons
+    document.addEventListener('DOMContentLoaded', function () {
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+      })
+    })
 
     // Expand image on click
     let expanded = false;
