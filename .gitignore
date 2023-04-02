@@ -1,3 +1,5 @@
 .env
 mobian_cloud/settings.py
-.vscode\launch.json
+.vscode/
+main_page/__pycache__
+mobian_cloud/__pycache__
