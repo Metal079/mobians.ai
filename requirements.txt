@@ -3,3 +3,4 @@ requests
 pillow
 psycopg2
 python-dotenv
+whitenoise
