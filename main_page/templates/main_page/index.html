@@ -179,6 +179,10 @@
       display: none;
     }
 
+    #enable-inpainting {
+      display: none;
+    }
+
     #error-modal {
       display: none;
     }
@@ -278,6 +282,9 @@
       <button type="button" class="btn-close" aria-label="Close" id="close-button"
         onclick="collapseImage('close-button')"></button>
 
+      <!-- Canvas for inpainting -->
+      <canvas id="drawing-canvas" width="510" height="768" style="display: none; position: fixed; z-index: 2;"></canvas>
+
       <!-- Prompt instructions -->
       <div id="instructions">Type a prompt and hit generate to start! Or click/tap here to add an image to use as a
         reference!</div>
@@ -331,6 +338,12 @@
           </span>
         </label>
         <input type="range" class="form-range" min="0.1" max="1" step="0.05" id="custom-denoise">
+      </div>
+
+      <!-- inpaint switch -->
+      <div class="form-check form-switch" id="enable-inpainting">
+        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onclick="enableInpaintCanvas()">
+        <label class="form-check-label" for="flexSwitchCheckDefault">Inpaint</label>
       </div>
 
       <!-- Advanced options -->
@@ -562,6 +575,7 @@
     function handleImageSelect(event) {
       const closeButton = document.getElementById("close-button");
       const denoiseStrength = document.getElementById("denoise-strength");
+      const inpaint = document.getElementById("enable-inpainting");
       const imageFile = event.target.files[0];
       if (imageFile) {
         const reader = new FileReader();
@@ -574,7 +588,8 @@
           expandImage("img-top-left", "close-button")
           document.getElementById('img-top-left').style.display = 'block';
           closeButton.style.display = "none";
-          denoiseStrength.style.display = 'block'
+          denoiseStrength.style.display = 'block';
+          inpaint.style.display = 'block';
 
           // Get the base64 string from the data URL
           base64Str = e.target.result.split(",")[1];
@@ -583,6 +598,68 @@
         reader.readAsDataURL(imageFile);
       }
     }
+
+    // inpainting 
+    const canvas = document.getElementById("drawing-canvas");
+    const ctx = canvas.getContext("2d");
+    ctx.lineWidth = 40; // Increase the value for a larger drawn area
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    let drawing = false;
+
+    canvas.addEventListener("mousedown", (e) => {
+      drawing = true;
+      ctx.beginPath();
+      ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    });
+
+    canvas.addEventListener("mousemove", (e) => {
+      if (!drawing) return;
+      ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+      ctx.stroke();
+    });
+
+    canvas.addEventListener("mouseup", () => {
+      drawing = false;
+    });
+
+    function enableDrawing() {
+      canvas.style.display = "block";
+    }
+
+    function disableDrawing() {
+      canvas.style.display = "none";
+    }
+
+    function getDrawingBase64() {
+      ctx.globalCompositeOperation = "destination-over";
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = "source-over";
+      return canvas.toDataURL().split(",")[1];
+    }
+
+    let inpainting = false;
+    const enableInpaintCanvas = () => {
+      inpainting = !inpainting;
+      if (inpainting) {
+        mode = 'inpainting';
+        const imageGrid = document.querySelector('.image-grid');
+
+        imageGrid.removeEventListener("click", handleImageGridClick);
+        enableDrawing();
+        document.getElementById("drawing-canvas").style.display = "block";
+        document.getElementById("denoise-strength").style.display = "none";
+      }
+      else {
+        mode = 'img2img';
+
+        imageGrid.addEventListener("click", handleImageGridClick);
+        disableDrawing()
+        document.getElementById("drawing-canvas").style.display = "none";
+        document.getElementById("denoise-strength").style.display = "block";
+      }
+    };
 
     // Info buttons
     document.addEventListener('DOMContentLoaded', function () {
@@ -755,6 +832,9 @@
       // Hide images
       hideAllImages();
 
+      // Hide inpainting canvas if it was on
+      document.getElementById("drawing-canvas").style.display = "none";
+
       // Show loading bar
       document.getElementById("instructions").classList.add("d-none");
       document.getElementById("loading-container").classList.remove("d-none");
@@ -797,15 +877,22 @@
       let payload;
       let response;
 
+
+      mode = 'inpainting';
+      let drawingBase64;
+      if (mode == 'inpainting') {
+        drawingBase64 = getDrawingBase64();
+      }
+
       switch (mode) {
         case 'txt2img':
           payload = {
             "data": {
               "prompt": document.getElementById('prompt-input').value,
               "steps": 20,
-              "negative_prompt": document.getElementById('formGroupExampleInput').value || "nsfw, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, signature, text, too many fingers, username, watermark,",
+              "negative_prompt": document.getElementById('formGroupExampleInput').value || "nsfw, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, signature, text, too many fingers, username, watermark",
               "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
-              "cfg_scale": Number(document.getElementById('customRange1').value) || 7,
+              "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
               "batch_size": 4,
               "width": imageWidth || 512,
               "height": imageHeight || 768,
@@ -830,9 +917,9 @@
               "prompt": document.getElementById('prompt-input').value,
               "image": base64Str,
               "steps": 30,
-              "negative_prompt": document.getElementById('formGroupExampleInput').value || "EasyNegative, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, pubic hair, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2",
+              "negative_prompt": document.getElementById('formGroupExampleInput').value || "nsfw, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, signature, text, too many fingers, username, watermark",
               "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
-              "cfg_scale": Number(document.getElementById('customRange1').value) || 7,
+              "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
               "batch_size": 4,
               "width": imageWidth || 512,
               "height": imageHeight || 768,
@@ -851,12 +938,43 @@
             body: JSON.stringify(payload)
           });
           break;
+
+        case 'inpainting':
+          payload = {
+            "data": {
+              "prompt": document.getElementById('prompt-input').value,
+              "image": base64Str,
+              "mask_image": drawingBase64,
+              "scheduler": 7,
+              "negative_prompt": document.getElementById('formGroupExampleInput').value || "nsfw, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, signature, text, too many fingers, username, watermark",
+              "width": imageWidth || 512,
+              "height": imageHeight || 768,
+              "steps": 40,
+              "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
+              "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
+              "batch_size": 4,
+              "strength": 1
+            },
+            "model": "Metal079--SonicDiffusionV3-Beta",
+          }
+
+          // Call Volta API
+          response = await fetch('inpainting/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+          break;
       }
 
       // Set back to txt2img mode
       mode = 'txt2img';
       const denoiseStrength = document.getElementById("denoise-strength");
-      denoiseStrength.style.display = 'none'
+      const inpaint = document.getElementById("enable-inpainting");
+      denoiseStrength.style.display = 'none';
+      inpaint.style.display = 'none';
 
       // Handle the API response
       if (response.ok) {
