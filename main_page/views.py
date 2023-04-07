@@ -46,7 +46,6 @@ def txt2img(request):
 
 @csrf_exempt
 def img2img(request):
-    print("hello img2img!")
     data = json.loads(request.body)
 
     # Convert base64 string to image to remove alpha channel if needed
@@ -81,3 +80,23 @@ def img2img(request):
 
     return JsonResponse({'images': base64_images})
 
+@csrf_exempt
+def inpainting(request):
+    data = json.loads(request.body)
+
+    response = requests.post(url=f'{API_IP}/api/generate/inpainting', json=data)
+    r = response.json()
+
+    # Process the data here
+    base64_images = []
+    for i in r['images']:
+        image = Image.open(io.BytesIO(base64.b64decode(i.split(",", 1)[0])))
+        img_io = io.BytesIO()
+
+        # Change to PNG to preserve png info
+        image.save(img_io, "JPEG", quality=90)
+        img_io.seek(0)
+        base64_images.append(base64.b64encode(
+            img_io.getvalue()).decode('utf-8'))
+
+    return JsonResponse({'images': base64_images})
