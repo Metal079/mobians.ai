@@ -247,6 +247,10 @@
         padding: 2vw;
         width: 100vw;
       }
+
+      #enable-inpainting {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -259,8 +263,8 @@
           <h5 class="modal-title">API Error</h5>
         </div>
         <div class="modal-body">
-          <p>There was an API error, if using a reference image, refresh the page and try using a different one. 
-            <p></p>If not, refresh or check back later, backend may be down</p>
+          <p>There was an API error, if using a reference image, refresh the page and try using a different one.
+          <p></p>If not, refresh or check back later, backend may be down</p>
         </div>
       </div>
     </div>
@@ -583,7 +587,9 @@
           document.getElementById('img-top-left').style.display = 'block';
           closeButton.style.display = "none";
           denoiseStrength.style.display = 'block';
-          inpaint.style.display = 'block';
+          if (!isMobileDevice()) {
+            inpaint.style.display = 'block';
+          }
 
           // Get the base64 string from the data URL
           base64Str = e.target.result.split(",")[1];
@@ -654,6 +660,14 @@
         document.getElementById("denoise-strength").style.display = "block";
       }
     };
+
+    // Check if user is using mobile device
+    function isMobileDevice() {
+      return (
+        typeof window.orientation !== "undefined" ||
+        navigator.userAgent.indexOf("IEMobile") !== -1
+      );
+    }
 
     // Info buttons
     document.addEventListener('DOMContentLoaded', function () {
