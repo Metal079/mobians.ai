@@ -371,7 +371,7 @@
               </label>
 
               <input type="text" class="form-control" id="formGroupExampleInput"
-                placeholder="nsfw, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, signature, text, too many fingers, username, watermark,">
+                placeholder="nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background">
             </div>
 
             <!-- Seed -->
@@ -896,7 +896,7 @@
             "data": {
               "prompt": document.getElementById('prompt-input').value,
               "steps": 20,
-              "negative_prompt": document.getElementById('formGroupExampleInput').value || "nsfw, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, signature, text, too many fingers, username, watermark",
+              "negative_prompt": document.getElementById('formGroupExampleInput').value || "nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background",
               "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
               "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
               "batch_size": 4,
@@ -923,7 +923,7 @@
               "prompt": document.getElementById('prompt-input').value,
               "image": base64Str,
               "steps": 30,
-              "negative_prompt": document.getElementById('formGroupExampleInput').value || "nsfw, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, signature, text, too many fingers, username, watermark",
+              "negative_prompt": document.getElementById('formGroupExampleInput').value || "nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background",
               "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
               "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
               "batch_size": 4,
@@ -952,7 +952,7 @@
               "image": base64Str,
               "mask_image": drawingBase64,
               "scheduler": 7,
-              "negative_prompt": document.getElementById('formGroupExampleInput').value || "nsfw, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, signature, text, too many fingers, username, watermark",
+              "negative_prompt": document.getElementById('formGroupExampleInput').value || "nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background",
               "width": imageWidth || 512,
               "height": imageHeight || 768,
               "steps": 40,
