@@ -283,6 +283,7 @@
       <!-- Canvas for inpainting -->
       <canvas id="drawing-canvas" width="510" height="768" style="display: none; position: fixed; z-index: 2;"></canvas>
 
+
       <!-- Prompt instructions -->
       <div id="instructions">Type a prompt and hit generate to start! Or click/tap here to add an image to use as a
         reference!</div>
@@ -342,6 +343,11 @@
       <div class="form-check form-switch" id="enable-inpainting">
         <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onclick="enableInpaintCanvas()">
         <label class="form-check-label" for="flexSwitchCheckDefault">Inpaint</label>
+        <span class="ms-1 text-primary" data-bs-toggle="tooltip" data-bs-placement="top"
+          title="Allows you to draw on the image you uploaded using your mouse to specify what should be changed. The inpainted areas will be the only ones changed while the rest of the image is unaffected"
+          style="background-color: rgba(255, 255, 255, 0.8); padding: 2px 4px; border-radius: 50%; cursor: pointer;">
+          ?
+        </span>
       </div>
 
       <!-- Advanced options -->
