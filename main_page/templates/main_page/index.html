@@ -368,7 +368,7 @@
           <div class="card card-body">
             <!-- Negative Prompt -->
             <div class="mb-3">
-              <label for="formGroupExampleInput" class="form-label">Negative Prompt
+              <label for="negative-prompt-input" class="form-label">Negative Prompt
                 <span class="ms-1 text-primary" data-bs-toggle="tooltip" data-bs-placement="top"
                   title="Add terms you want the AI to avoid when generating the image. Separate each term with a comma. By default a negative prompt is provided so this does not need to be modifed unless the below negative does not work well for you."
                   style="background-color: rgba(255, 255, 255, 0.8); padding: 2px 4px; border-radius: 50%; cursor: pointer;">
@@ -376,7 +376,7 @@
                 </span>
               </label>
 
-              <input type="text" class="form-control" id="formGroupExampleInput"
+              <input type="text" class="form-control" id="negative-prompt-input" value="nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background"
                 placeholder="nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background">
             </div>
 
@@ -902,7 +902,7 @@
             "data": {
               "prompt": document.getElementById('prompt-input').value,
               "steps": 20,
-              "negative_prompt": document.getElementById('formGroupExampleInput').value || "nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background",
+              "negative_prompt": document.getElementById('negative-prompt-input').value,
               "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
               "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
               "batch_size": 4,
@@ -929,7 +929,7 @@
               "prompt": document.getElementById('prompt-input').value,
               "image": base64Str,
               "steps": 30,
-              "negative_prompt": document.getElementById('formGroupExampleInput').value || "nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background",
+              "negative_prompt": document.getElementById('negative-prompt-input').value,
               "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
               "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
               "batch_size": 4,
@@ -958,7 +958,7 @@
               "image": base64Str,
               "mask_image": drawingBase64,
               "scheduler": 7,
-              "negative_prompt": document.getElementById('formGroupExampleInput').value || "nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background",
+              "negative_prompt": document.getElementById('negative-prompt-input').value,
               "width": imageWidth || 512,
               "height": imageHeight || 768,
               "steps": 40,
