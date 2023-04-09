@@ -95,10 +95,6 @@
       height: 5vh;
     }
 
-    #button-addon2 {
-      height: 5vh;
-    }
-
     .content-container {
       display: flex;
       align-items: flex-start;
@@ -218,6 +214,10 @@
         width: 97vw;
       }
 
+      #prompt-input {
+        height: 6vh;
+      }
+
       #prompt-input-box {
         padding-bottom: 5%;
         padding-left: 0;
@@ -321,10 +321,10 @@
 
     <!-- Prompt input box and advanced options button -->
     <div class="input-button-container">
-      <div id="prompt-input-box" class="input-group">
-        <input type="text" class="form-control" placeholder="Enter Prompt" aria-label="Enter Prompt"
-          aria-describedby="button-addon2" id="prompt-input">
-        <button class="btn btn-primary" type="button" id="button-addon2">Generate!</button>
+      <div id="prompt-input-box" class="input-group d-flex align-items-stretch">
+        <textarea class="form-control" placeholder="Enter Prompt" aria-label="Enter Prompt"
+          aria-describedby="button-addon2" id="prompt-input" rows="3"></textarea>
+        <button class="btn btn-primary d-flex align-items-center" type="button" id="button-addon2">Generate!</button>
       </div>
 
       <!-- Denoise strength -->
@@ -376,7 +376,8 @@
                 </span>
               </label>
 
-              <input type="text" class="form-control" id="negative-prompt-input" value="nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background"
+              <input type="text" class="form-control" id="negative-prompt-input"
+                value="nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background"
                 placeholder="nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background">
             </div>
 
