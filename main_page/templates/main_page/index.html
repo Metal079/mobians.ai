@@ -32,20 +32,25 @@
   <link rel="shortcut icon" href="{% static 'main_page/favicon.ico' %}">
   <title>The best Sonic OC generator </title>
   <style>
-    /* Add the following styles */
-    input[type="text"],
-    select.form-select {
-      font-size: 1rem;
-      padding: 0.5rem 1rem;
+    body {
+      background-color: #2fa5e9;
+    }
+
+    .content-container {
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      padding-top: 3%;
     }
 
     .small-image {
       width: 100%;
       height: 100%;
-      object-fit: contain;
     }
 
+    /* Grid where images are */
     .image-grid {
+      /* Centers instructions in image grid */
       justify-content: center;
       align-items: center;
       display: grid;
@@ -60,64 +65,12 @@
       border-radius: 10px;
       background-color: #3880ec;
       position: relative;
-      gap: 4px;
+
+      /* Keeps image edges from going outside image-grid */
       overflow: hidden;
-      gap: 0;
-    }
 
-    #generated-images {
-      display: flex;
-      align-items: top;
-      justify-content: top;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-
-    .center-element {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 20px;
-    }
-
-    body {
-      background-color: #2fa5e9;
-    }
-
-    #prompt-input-box {
-      align-items: flex-start;
-      justify-content: top;
-      padding-left: 10px;
-      padding-bottom: 10px;
-    }
-
-    #prompt-input {
-      height: 5vh;
-    }
-
-    .content-container {
-      display: flex;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      padding-top: 3%;
-    }
-
-    #advanced-options {
-      padding-left: 10px;
-      z-index: 1;
-      width: 5in;
-    }
-
-    .input-button-container {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      width: 5in;
-      padding-left: 10px;
-    }
-
-    .w-100 {
-      width: 200%;
+      /* Stops gap between images */
+      border: 0;
     }
 
     #loading-container {
@@ -128,13 +81,17 @@
       z-index: 1;
     }
 
-    .card {
-      background-color: #3880ec;
-      border: 0;
+    #queue-position {
+      opacity: 70%;
     }
 
-    .card-body {
-      background-color: #2fa5e9;
+    #instructions {
+      position: relative;
+      top: 50%;
+      left: 50%;
+      text-align: center;
+      z-index: 1;
+      opacity: 70%;
     }
 
     .expanded-image {
@@ -143,6 +100,51 @@
       z-index: 10;
       transition: all 0.5s ease-in-out;
       object-fit: cover;
+    }
+
+    /* Includes prompt input box, generate button and advanced options */
+    .input-button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 5in;
+      padding-left: 10px;
+    }
+
+    /* Includes prompt input box and generate button */
+    #prompt-input-box {
+      align-items: flex-start;
+      justify-content: top;
+      padding-left: 10px;
+      padding-bottom: 10px;
+    }
+
+    /* The input box itself where text is */
+    #prompt-input {
+      height: 5vh;
+    }
+
+    #denoise-strength {
+      display: none;
+    }
+
+    #enable-inpainting {
+      display: none;
+    }
+
+    #advanced-options {
+      padding-left: 10px;
+      z-index: 1;
+      width: 5in;
+    }
+
+    .card {
+      background-color: #3880ec;
+      border: 0;
+    }
+
+    .card-body {
+      background-color: #2fa5e9;
     }
 
     #close-button {
@@ -155,27 +157,6 @@
       cursor: pointer;
       z-index: 2;
       object-fit: none;
-    }
-
-    #instructions {
-      position: relative;
-      top: 50%;
-      left: 50%;
-      text-align: center;
-      z-index: 1;
-      opacity: 70%;
-    }
-
-    #queue-position {
-      opacity: 70%;
-    }
-
-    #denoise-strength {
-      display: none;
-    }
-
-    #enable-inpainting {
-      display: none;
     }
 
     #error-modal {
@@ -210,17 +191,26 @@
         height: auto;
       }
 
-      #advanced-options {
-        width: 97vw;
+      #prompt-input-box {
+        padding-bottom: 5%;
+        padding-left: 0;
       }
 
       #prompt-input {
         height: 6vh;
       }
 
-      #prompt-input-box {
-        padding-bottom: 5%;
-        padding-left: 0;
+      #denoise-strength {
+        padding: 2vw;
+        width: 100vw;
+      }
+
+      #enable-inpainting {
+        display: none;
+      }
+
+      #advanced-options {
+        width: 97vw;
       }
 
       .FAQ {
@@ -241,15 +231,6 @@
       .mb-0 {
         padding-left: 2vw;
         padding-right: 2vw;
-      }
-
-      #denoise-strength {
-        padding: 2vw;
-        width: 100vw;
-      }
-
-      #enable-inpainting {
-        display: none;
       }
     }
   </style>
