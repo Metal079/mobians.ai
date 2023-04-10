@@ -155,7 +155,7 @@
       padding: 10px;
       font-size: 24px;
       cursor: pointer;
-      z-index: 2;
+      z-index: 100;
       object-fit: none;
     }
 
@@ -282,22 +282,14 @@
       </div>
 
       <!-- Images -->
-      <div class="image-wrapper" style="position: relative;">
-        <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-          onclick="expandImage('img-top-left', 'close-button')">
-      </div>
-      <div class=" image-wrapper" style="position: relative;">
-        <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-          onclick="expandImage('img-top-right', 'close-button')">
-      </div>
-      <div class="image-wrapper" style="position: relative;">
-        <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-          onclick="expandImage('img-bottom-left', 'close-button')">
-      </div>
-      <div class="image-wrapper" style="position: relative;">
-        <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-          onclick="expandImage('img-bottom-right', 'close-button')">
-      </div>
+      <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
+        onclick="expandImage('img-top-left', 'close-button')">
+      <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
+        onclick="expandImage('img-top-right', 'close-button')">
+      <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
+        onclick="expandImage('img-bottom-left', 'close-button')">
+      <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
+        onclick="expandImage('img-bottom-right', 'close-button')">
     </div>
 
     <!-- Prompt input box and advanced options button -->
@@ -562,6 +554,7 @@
       const denoiseStrength = document.getElementById("denoise-strength");
       const inpaint = document.getElementById("enable-inpainting");
       const imageFile = event.target.files[0];
+
       if (imageFile) {
         const reader = new FileReader();
         reader.onload = function (e) {
@@ -571,9 +564,14 @@
           // UI stuff
           document.getElementById("instructions").classList.add("d-none");
           expandImage("img-top-left", "close-button")
+          document.getElementById('img-top-left').style.width = '100%';
+          document.getElementById('img-top-left').style.height = 'auto';
           document.getElementById('img-top-left').style.display = 'block';
+
           closeButton.style.display = "none";
           denoiseStrength.style.display = 'block';
+
+          // Dont show inpainting for mobile devices
           if (!isMobileDevice()) {
             inpaint.style.display = 'block';
           }
