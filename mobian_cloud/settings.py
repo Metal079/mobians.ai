@@ -80,23 +80,25 @@ WSGI_APPLICATION = 'mobian_cloud.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-DBNAME=os.environ.get('DBNAME')
-DBHOST=os.environ.get('DBHOST')
-DBUSER=os.environ.get('DBUSER')
-DBPASS=os.environ.get('DBPASS')
+# DBNAME=os.environ.get('DBNAME')
+# DBHOST=os.environ.get('DBHOST')
+# DBUSER=os.environ.get('DBUSER')
+# DBPASS=os.environ.get('DBPASS')
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': DBNAME,
-        'USER': DBUSER,
-        'PASSWORD': DBPASS,
-        'HOST': DBHOST,  # or the IP address of your PostgreSQL server
-        'PORT': '5432',  # the default PostgreSQL port
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': DBNAME,
+#         'USER': DBUSER,
+#         'PASSWORD': DBPASS,
+#         'HOST': DBHOST,  # or the IP address of your PostgreSQL server
+#         'PORT': '5432',  # the default PostgreSQL port
+#     }
+# }
 
-
+# Session engine
+# Use cache-based session engine instead of the database-based one
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
