@@ -1,3 +1,4 @@
+import os
 from datetime import date
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
@@ -6,8 +7,6 @@ from django.urls import reverse
 class StaticViewSitemap(Sitemap):
     priority = 0.5
     changefreq = 'daily'
-    # Update this date whenever the content changes
-    lastmod_fixed = date(2023, 4, 11)
 
     def items(self):
         return ['main_page:index']
@@ -16,4 +15,8 @@ class StaticViewSitemap(Sitemap):
         return reverse(item)
 
     def lastmod(self, item):
-        return self.lastmod_fixed
+        # Replace 'your_app_name' with the name of your Django app
+        template_path = os.path.join(
+            'main_page', 'templates', 'main_page', 'index.html')
+        modification_time = os.path.getmtime(template_path)
+        return date.fromtimestamp(modification_time)
