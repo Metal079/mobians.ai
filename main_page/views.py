@@ -6,7 +6,7 @@ import requests
 from threading import Lock
 
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.templatetags.static import static
@@ -22,6 +22,15 @@ API_IP = os.environ.get('API_IP')
 # Create your views here.
 def index(resquest):
     return render(resquest, 'main_page/index.html')
+
+def robots_txt(request):
+    content = (
+        "User-agent: *\n"
+        "Disallow: /*\n"
+        "Allow: /$\n"
+        "Sitemap: https://mobians.ai/sitemap.xml"
+    )
+    return HttpResponse(content, content_type="text/plain")
 
 @csrf_exempt
 def txt2img(request):
