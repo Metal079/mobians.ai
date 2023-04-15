@@ -41,8 +41,8 @@ def txt2img(request):
 
     # Process the data here
     base64_images = []
-    for i in r['images']:
-        image = Image.open(io.BytesIO(base64.b64decode(i.split(",", 1)[0])))
+    for i in r['images'][1:]:
+        image = Image.open(io.BytesIO(base64.b64decode(i.split(",", 1)[1])))
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
@@ -72,7 +72,7 @@ def img2img(request):
         encoded_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
         data['data']['image'] = encoded_image
 
-    response = requests.post(url=f'{API_IP}/api/generate/img2img', json=data)
+    response = requests.post(url=f'{API_IP}/api/generate/img2img', json=data, timeout=120)
     r = response.json()
 
     # Process the data here
@@ -93,7 +93,7 @@ def img2img(request):
 def inpainting(request):
     data = json.loads(request.body)
 
-    response = requests.post(url=f'{API_IP}/api/generate/inpainting', json=data)
+    response = requests.post(url=f'{API_IP}/api/generate/inpainting', json=data, timeout=120)
     r = response.json()
 
     # Process the data here

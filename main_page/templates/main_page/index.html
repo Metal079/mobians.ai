@@ -852,7 +852,7 @@
         case '1':
           imageWidth = 768; // Landscape
           imageHeight = 512;
-          model = "Metal079--SonicDiffusionV3-Beta__768x512x4"
+          model = "SonicDiffusionV3-Delta__768x512x4"
           break;
         case '2':
           imageWidth = 512;
@@ -862,12 +862,12 @@
         case '3':
           imageWidth = 512; // Portrait
           imageHeight = 768;
-          model = "Metal079--SonicDiffusionV3-Beta__512x768x4"
+          model = "SonicDiffusionV3-Delta__512x768x4"
           break;
         default:
           imageWidth = 512;
           imageHeight = 768;
-          model = "Metal079--SonicDiffusionV3-Beta__512x768x4"
+          model = "SonicDiffusionV3-Delta__512x768x4"
       }
 
       let payload;
@@ -949,7 +949,7 @@
               "batch_size": 4,
               "strength": 1
             },
-            "model": "Metal079--SonicDiffusionV3-Beta",
+            "model": "SonicDiffusionV3-Delta",
           }
 
           // Call Volta API
