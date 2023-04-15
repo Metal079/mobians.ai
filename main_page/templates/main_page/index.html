@@ -491,6 +491,8 @@
                 data-name="bmc-button" data-slug="pablocastr6" data-color="#5F7FFF" data-emoji="" data-font="Cookie"
                 data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff"
                 data-coffee-color="#FFDD00"></script>
+
+                Special thanks to Mecha from the '80s and RinMaru for helping gather training images!
               <!-- <a href="https://www.patreon.com/bePatron?u=37673970"
                 data-patreon-widget-type="become-patron-button">Become a Patron!</a>
               <script async src="https://c6.patreon.com/becomePatronButton.bundle.js"></script> -->
@@ -852,7 +854,7 @@
         case '1':
           imageWidth = 768; // Landscape
           imageHeight = 512;
-          model = "Metal079--SonicDiffusionV3-Beta__768x512x4"
+          model = "SonicDiffusionV3-Delta__768x512x4"
           break;
         case '2':
           imageWidth = 512;
@@ -862,12 +864,12 @@
         case '3':
           imageWidth = 512; // Portrait
           imageHeight = 768;
-          model = "Metal079--SonicDiffusionV3-Beta__512x768x4"
+          model = "SonicDiffusionV3-Delta__512x768x4"
           break;
         default:
           imageWidth = 512;
           imageHeight = 768;
-          model = "Metal079--SonicDiffusionV3-Beta__512x768x4"
+          model = "SonicDiffusionV3-Delta__512x768x4"
       }
 
       let payload;
@@ -949,7 +951,7 @@
               "batch_size": 4,
               "strength": 1
             },
-            "model": "Metal079--SonicDiffusionV3-Beta",
+            "model": "SonicDiffusionV3-Delta",
           }
 
           // Call Volta API

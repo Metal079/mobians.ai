@@ -41,8 +41,8 @@ def txt2img(request):
 
     # Process the data here
     base64_images = []
-    for i in r['images']:
-        image = Image.open(io.BytesIO(base64.b64decode(i.split(",", 1)[0])))
+    for i in r['images'][1:]:
+        image = Image.open(io.BytesIO(base64.b64decode(i.split(",", 1)[1])))
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
