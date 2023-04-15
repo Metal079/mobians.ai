@@ -72,7 +72,7 @@ def img2img(request):
         encoded_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
         data['data']['image'] = encoded_image
 
-    response = requests.post(url=f'{API_IP}/api/generate/img2img', json=data, timeout=120)
+    response = requests.post(url=f'{API_IP}/api/generate/img2img', json=data)
     r = response.json()
 
     # Process the data here
@@ -93,7 +93,7 @@ def img2img(request):
 def inpainting(request):
     data = json.loads(request.body)
 
-    response = requests.post(url=f'{API_IP}/api/generate/inpainting', json=data, timeout=120)
+    response = requests.post(url=f'{API_IP}/api/generate/inpainting', json=data)
     r = response.json()
 
     # Process the data here
