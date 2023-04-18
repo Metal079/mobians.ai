@@ -1,1 +1,1 @@
-web: gunicorn mobian_cloud.wsgi:application --workers 4 --bind 0.0.0.0:8000
+web: gunicorn mobian_cloud.wsgi:application --workers 8 --bind 0.0.0.0:8000
