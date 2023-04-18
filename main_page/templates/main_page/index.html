@@ -436,6 +436,7 @@
                       <li>Lanolin the sheep</li>
                       <li>Marine the Raccoon</li>
                       <li>Metal Sonic</li>
+                      <li>Mighty the armadillo</li>
                       <li>Mina Mongoose</li>
                       <li>Mobian (Original characters in sonic style basically!)</li>
                       <li>Nicole the Lynx</li>
@@ -899,7 +900,8 @@
               "height": imageHeight || 768,
               "scheduler": 7
             },
-            "model": model
+            "model": model,
+            "save_image": false,
           }
 
           // Call Volta API
@@ -927,7 +929,8 @@
               "scheduler": 13,
               "strength": document.getElementById('custom-denoise').value || 0.7
             },
-            "model": model
+            "model": model,
+            "save_image": false,
           }
 
           // Call Volta API
