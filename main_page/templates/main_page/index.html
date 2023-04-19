@@ -607,10 +607,14 @@
           // UI stuff
           document.getElementById("instructions").classList.add("d-none");
           expandImage("img-top-left", "close-button")
-          document.getElementById('img-top-left').style.width = '100%';
+          document.getElementById('img-top-left').style.width = '200%';
           document.getElementById('img-top-left').style.height = 'auto';
           document.getElementById('img-top-left').style.display = 'block';
           document.querySelector(".image-wrapper").style.display = 'inline-block';
+          
+          // set reference-top-left to be hidden
+          document.getElementById('reference-top-left').style.display = 'none';
+
           closeButton.style.display = "none";
           denoiseStrength.style.display = 'block';
 
@@ -629,10 +633,7 @@
 
     // Used when clicking reference image button
     function setReferenceImage(imageId) {
-      const closeButton = document.getElementById("close-button");
-      const denoiseStrength = document.getElementById("denoise-strength");
       const image = document.getElementById(imageId);
-
 
       // Set the image source to the data URL
       document.getElementById("img-top-left").src = image.src;
@@ -641,8 +642,7 @@
       document.getElementById("instructions").classList.add("d-none");
       expandImage("img-top-left", "close-button")
       document.getElementById('img-top-left').style.display = 'block';
-      closeButton.style.display = "none";
-      denoiseStrength.style.display = 'block'
+      document.getElementById("denoise-strength").style.display = 'block'
 
       // Hide reference buttons
       document.getElementById("reference-top-left").style.display = 'none';
@@ -804,6 +804,8 @@
       currentImage.style.height = '';
 
       resetAllImageDisplays();
+
+      document.getElementById("denoise-strength").style.display = 'none';
     }
 
     // Allows us to see the images that are generated
@@ -818,6 +820,11 @@
       resetImageDisplay('img-top-right');
       resetImageDisplay('img-bottom-left');
       resetImageDisplay('img-bottom-right');
+      
+      document.getElementById('reference-top-left').style.display = 'block';
+      document.getElementById('reference-top-right').style.display = 'block';
+      document.getElementById('reference-bottom-left').style.display = 'block';
+      document.getElementById('reference-bottom-right').style.display = 'block';
     };
 
     // Hide all images
