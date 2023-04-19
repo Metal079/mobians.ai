@@ -90,14 +90,20 @@ def img2img(request):
     response = requests.post(url=f'{API_IP}/api/generate/img2img', json=data)
     r = response.json()
 
+    watermark_text = "Mobians.ai"
+    opacity = 128  # Semi-transparent (0-255)
+
     # Process the data here
     base64_images = []
     for i in r['images'][1:]:
         image = Image.open(io.BytesIO(base64.b64decode(i.split(",", 1)[1])))
         img_io = io.BytesIO()
 
+        # Add watermark
+        image_with_watermark = add_watermark(image, watermark_text, opacity)
+
         # Change to PNG to preserve png info
-        image.save(img_io, "JPEG", quality=90)
+        image_with_watermark.save(img_io, "JPEG", quality=90)
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
