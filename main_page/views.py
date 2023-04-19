@@ -33,11 +33,12 @@ def add_watermark(image, watermark_text, opacity):
     # Create watermark image
     watermark = Image.new('RGBA', image.size, (255, 255, 255, 0))
     draw = ImageDraw.Draw(watermark)
-    font = ImageFont.truetype("arial.ttf", 12) # Change the font file and size if needed
+    font = ImageFont.truetype("arial.ttf", 20) # Change the font file and size if needed
     draw.text((10, 10), watermark_text, font=font, fill=(255, 255, 255, opacity))
 
     # Overlay watermark on the original image
-    return Image.alpha_composite(image.convert("RGBA"), watermark)
+    image_with_watermark = Image.alpha_composite(image.convert("RGBA"), watermark)
+    return image_with_watermark.convert("RGB")  # Convert back to RGB mode
 
 @csrf_exempt
 def txt2img(request):
@@ -60,7 +61,7 @@ def txt2img(request):
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
-        image_with_watermark.save(img_io, "PNG", quality=90)
+        image_with_watermark.save(img_io, "WEBP", quality=90)
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
