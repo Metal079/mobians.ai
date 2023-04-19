@@ -36,6 +36,16 @@
       background-color: #2fa5e9;
     }
 
+    ::selection {
+      background-color: #fcbe14; /* Change this color to your desired selection background color */
+      color: #000; /* Change this color to your desired selected text color */
+    }
+
+    ::-moz-selection {
+      background-color: #fcbe14; /* Change this color to your desired selection background color */
+      color: #000; /* Change this color to your desired selected text color */
+    }
+
     .content-container {
       display: flex;
       align-items: flex-start;
@@ -98,7 +108,6 @@
       grid-column: 1 / -1;
       grid-row: 1 / -1;
       z-index: 10;
-      transition: all 0.5s ease-in-out;
       object-fit: cover;
     }
 
@@ -162,6 +171,26 @@
     #error-modal {
       display: none;
     }
+
+    .middle-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      width: 50%;
+    }
+
+    .image-wrapper {
+      position: relative;
+      display: none;
+    }
+
+    .image-wrapper:hover .middle-button {
+      opacity: 0.7;
+    }
+
 
     @media (max-width: 480px) {
       .content-container {
@@ -281,16 +310,32 @@
         </div>
       </div>
 
-      <!-- Images -->
-      <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-        onclick="expandImage('img-top-left', 'close-button')">
-      <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-        onclick="expandImage('img-top-right', 'close-button')">
-      <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-        onclick="expandImage('img-bottom-left', 'close-button')">
-      <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-        onclick="expandImage('img-bottom-right', 'close-button')">
+    <!-- Images -->
+    <div class="image-wrapper" style="position: relative;">
+      <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'" title=""
+          onclick="expandImage('img-top-left', 'close-button')">
+      <button class="btn btn-primary middle-button" type="button" id="reference-top-left"
+        onclick="setReferenceImage('img-top-left')">Reference</button>
     </div>
+    <div class="image-wrapper" style="position: relative;">
+      <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'" title=""
+          onclick="expandImage('img-top-right', 'close-button')">
+      <button class="btn btn-primary middle-button reference-buttons" type="button" id="reference-top-right"
+        onclick="setReferenceImage('img-top-right')">Reference</button>
+    </div>
+    <div class="image-wrapper" style="position: relative;">
+      <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'" title=""
+          onclick="expandImage('img-bottom-left', 'close-button')">
+      <button class="btn btn-primary middle-button" type="button" id="reference-bottom-left"
+        onclick="setReferenceImage('img-bottom-left')">Reference</button>
+    </div>
+    <div class="image-wrapper" style="position: relative;">
+      <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'" title=""
+          onclick="expandImage('img-bottom-right', 'close-button')">
+      <button class="btn btn-primary middle-button" type="button" id="reference-bottom-right"
+        onclick="setReferenceImage('img-bottom-right')">Reference</button>
+    </div>
+  </div>
 
     <!-- Prompt input box and advanced options button -->
     <div class="input-button-container">
@@ -449,6 +494,7 @@
                   <div class="col col-md-4">
                     <ul>
                       <li>Sonic the hedgehog</li>
+                      <li>Starline the platypus</li>
                       <li>Sticks the badger</li>
                       <li>Storm the albatross</li>
                       <li>Surge the tenrec</li>
@@ -572,9 +618,13 @@
           // UI stuff
           document.getElementById("instructions").classList.add("d-none");
           expandImage("img-top-left", "close-button")
-          document.getElementById('img-top-left').style.width = '100%';
+          document.getElementById('img-top-left').style.width = '200%';
           document.getElementById('img-top-left').style.height = 'auto';
           document.getElementById('img-top-left').style.display = 'block';
+          document.querySelector(".image-wrapper").style.display = 'inline-block';
+          
+          // set reference-top-left to be hidden
+          document.getElementById('reference-top-left').style.display = 'none';
 
           closeButton.style.display = "none";
           denoiseStrength.style.display = 'block';
@@ -590,6 +640,30 @@
         };
         reader.readAsDataURL(imageFile);
       }
+    }
+
+    // Used when clicking reference image button
+    function setReferenceImage(imageId) {
+      const image = document.getElementById(imageId);
+
+      // Set the image source to the data URL
+      document.getElementById("img-top-left").src = image.src;
+
+      // UI stuff
+      document.getElementById("instructions").classList.add("d-none");
+      expandImage("img-top-left", "close-button")
+      document.getElementById('img-top-left').style.display = 'block';
+      document.getElementById("denoise-strength").style.display = 'block'
+
+      // Hide reference buttons
+      document.getElementById("reference-top-left").style.display = 'none';
+      document.getElementById("reference-top-right").style.display = 'none';
+      document.getElementById("reference-bottom-left").style.display = 'none';
+      document.getElementById("reference-bottom-right").style.display = 'none';
+
+      // Get the base64 string from the data URL
+      base64Str = image.src.split(",")[1];
+      mode = 'img2img';
     }
 
     // inpainting 
@@ -741,6 +815,9 @@
       currentImage.style.height = '';
 
       resetAllImageDisplays();
+
+      document.getElementById("denoise-strength").style.display = 'none';
+      mode = 'txt2img';
     }
 
     // Allows us to see the images that are generated
@@ -755,6 +832,11 @@
       resetImageDisplay('img-top-right');
       resetImageDisplay('img-bottom-left');
       resetImageDisplay('img-bottom-right');
+      
+      document.getElementById('reference-top-left').style.display = 'block';
+      document.getElementById('reference-top-right').style.display = 'block';
+      document.getElementById('reference-bottom-left').style.display = 'block';
+      document.getElementById('reference-bottom-right').style.display = 'block';
     };
 
     // Hide all images
@@ -995,10 +1077,28 @@
         document.getElementById('img-bottom-left').src = 'data:image/png;base64,' + base64Images[2];
         document.getElementById('img-bottom-right').src = 'data:image/png;base64,' + base64Images[3];
 
+        // Set the title attribute of the img tags based on the prompt info
+        document.getElementById('img-top-left').title = `${document.getElementById('prompt-input').value}.png`;
+        document.getElementById('img-top-right').title = `${document.getElementById('prompt-input').value}.png`;
+        document.getElementById('img-bottom-left').title = `${document.getElementById('prompt-input').value}.png`;
+        document.getElementById('img-bottom-right').title = `${document.getElementById('prompt-input').value}.png`;
+
         // Unhide the images and enable generate button
         collapseImage("img-top-left", "close-button")
         resetAllImageDisplays();
         document.getElementById('button-addon2').disabled = false;
+
+        // unhide reference buttons
+        document.getElementById("reference-top-left").style.display = 'block';
+        document.getElementById("reference-top-right").style.display = 'block';
+        document.getElementById("reference-bottom-left").style.display = 'block';
+        document.getElementById("reference-bottom-right").style.display = 'block';
+
+        // unhide image_wrapper (which unhides reference buttons and images)
+        document.querySelectorAll(".image-wrapper").forEach(wrapper => {
+          wrapper.style.display = "inline-block";
+        });;
+
       } else {
         console.error(`Error: ${response.status}`); // Handle the error
         const error_modal = document.getElementById("error-modal");
