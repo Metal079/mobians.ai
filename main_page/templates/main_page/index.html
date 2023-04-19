@@ -182,6 +182,24 @@
       display: none;
     }
 
+    .middle-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .image-wrapper {
+      position: relative;
+      display: none;
+    }
+
+    .image-wrapper:hover .middle-button {
+      opacity: 1;
+    }
+
     @media (max-width: 480px) {
       .content-container {
         flex-direction: column;
@@ -296,18 +314,26 @@
       <div class="image-wrapper" style="position: relative;">
         <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
           onclick="expandImage('img-top-left', 'close-button')">
+        <button class="btn btn-primary middle-button" type="button" id="reference-top-left"
+          onclick="setReferenceImage('img-top-left')">Reference</button>
       </div>
-      <div class=" image-wrapper" style="position: relative;">
+      <div class="image-wrapper" style="position: relative;">
         <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
           onclick="expandImage('img-top-right', 'close-button')">
+        <button class="btn btn-primary middle-button reference-buttons" type="button" id="reference-top-right"
+          onclick="setReferenceImage('img-top-right')">Reference</button>
       </div>
       <div class="image-wrapper" style="position: relative;">
         <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
           onclick="expandImage('img-bottom-left', 'close-button')">
+        <button class="btn btn-primary middle-button" type="button" id="reference-bottom-left"
+          onclick="setReferenceImage('img-bottom-left')">Reference</button>
       </div>
       <div class="image-wrapper" style="position: relative;">
         <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
           onclick="expandImage('img-bottom-right', 'close-button')">
+        <button class="btn btn-primary middle-button" type="button" id="reference-bottom-right"
+          onclick="setReferenceImage('img-bottom-right')">Reference</button>
       </div>
     </div>
 
@@ -571,6 +597,7 @@
           document.getElementById("instructions").classList.add("d-none");
           expandImage("img-top-left", "close-button")
           document.getElementById('img-top-left').style.display = 'block';
+          document.querySelector(".image-wrapper").style.display = 'inline-block';
           closeButton.style.display = "none";
           denoiseStrength.style.display = 'block'
 
@@ -580,6 +607,34 @@
         };
         reader.readAsDataURL(imageFile);
       }
+    }
+
+    // Used when clicking reference image button
+    function setReferenceImage(imageId) {
+      const closeButton = document.getElementById("close-button");
+      const denoiseStrength = document.getElementById("denoise-strength");
+      const image = document.getElementById(imageId);
+
+
+      // Set the image source to the data URL
+      document.getElementById("img-top-left").src = image.src;
+
+      // UI stuff
+      document.getElementById("instructions").classList.add("d-none");
+      expandImage("img-top-left", "close-button")
+      document.getElementById('img-top-left').style.display = 'block';
+      closeButton.style.display = "none";
+      denoiseStrength.style.display = 'block'
+
+      // Hide reference buttons
+      document.getElementById("reference-top-left").style.display = 'none';
+      document.getElementById("reference-top-right").style.display = 'none';
+      document.getElementById("reference-bottom-left").style.display = 'none';
+      document.getElementById("reference-bottom-right").style.display = 'none';
+
+      // Get the base64 string from the data URL
+      base64Str = image.src.split(",")[1];
+      mode = 'img2img';
     }
 
     // Info buttons
@@ -875,6 +930,18 @@
         collapseImage("img-top-left", "close-button")
         resetAllImageDisplays();
         document.getElementById('button-addon2').disabled = false;
+
+        // unhide reference buttons
+        document.getElementById("reference-top-left").style.display = 'block';
+        document.getElementById("reference-top-right").style.display = 'block';
+        document.getElementById("reference-bottom-left").style.display = 'block';
+        document.getElementById("reference-bottom-right").style.display = 'block';
+
+        // unhide image_wrapper (which unhides reference buttons and images)
+        document.querySelectorAll(".image-wrapper").forEach(wrapper => {
+          wrapper.style.display = "inline-block";
+        });;
+
       } else {
         console.error(`Error: ${response.status}`); // Handle the error
         const error_modal = document.getElementById("error-modal");
