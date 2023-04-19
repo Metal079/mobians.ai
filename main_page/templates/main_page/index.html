@@ -1078,10 +1078,10 @@
         document.getElementById('img-bottom-right').src = 'data:image/png;base64,' + base64Images[3];
 
         // Set the title attribute of the img tags based on the prompt info
-        // document.getElementById('img-top-left').title = `${document.getElementById('prompt-input').value}.png`;
-        // document.getElementById('img-top-right').title = `${document.getElementById('prompt-input').value}.png`;
-        // document.getElementById('img-bottom-left').title = `${document.getElementById('prompt-input').value}.png`;
-        // document.getElementById('img-bottom-right').title = `${document.getElementById('prompt-input').value}.png`;
+        document.getElementById('img-top-left').title = `${document.getElementById('prompt-input').value}.png`;
+        document.getElementById('img-top-right').title = `${document.getElementById('prompt-input').value}.png`;
+        document.getElementById('img-bottom-left').title = `${document.getElementById('prompt-input').value}.png`;
+        document.getElementById('img-bottom-right').title = `${document.getElementById('prompt-input').value}.png`;
 
         // Unhide the images and enable generate button
         collapseImage("img-top-left", "close-button")

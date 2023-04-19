@@ -3,9 +3,8 @@ import json
 import io
 import base64
 import requests
-from threading import Lock
 
-
+from django.contrib.staticfiles import finders
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
@@ -33,7 +32,8 @@ def add_watermark(image, watermark_text, opacity):
     # Create watermark image
     watermark = Image.new('RGBA', image.size, (255, 255, 255, 0))
     draw = ImageDraw.Draw(watermark)
-    font = ImageFont.truetype("arial.ttf", 20) # Change the font file and size if needed
+    font_file_path = finders.find('fonts/Roboto-Medium.ttf')
+    font = ImageFont.truetype(font_file_path, 20)
     draw.text((10, 10), watermark_text, font=font, fill=(255, 255, 255, opacity))
 
     # Overlay watermark on the original image
@@ -61,7 +61,7 @@ def txt2img(request):
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
-        image_with_watermark.save(img_io, "JPEG", quality=90)
+        image_with_watermark.save(img_io, "WEBP", quality=90)
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
