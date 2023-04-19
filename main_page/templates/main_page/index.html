@@ -583,9 +583,10 @@
       handleImageSelect({ target: { files: imageInput.files } });
     }
 
-
+    // Listen for image upload
     imageGrid.addEventListener("click", handleImageGridClick);
-
+    imageGrid.addEventListener("dragover", allowDrop);
+    imageGrid.addEventListener("drop", drop);
     imageInput.addEventListener("change", handleImageInputChange);
 
     function allowDrop(event) {
