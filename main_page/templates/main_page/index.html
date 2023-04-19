@@ -643,6 +643,7 @@
     }
 
     // Used when clicking reference image button
+    let topLeftImageCache = new Image();;
     function setReferenceImage(imageId) {
       const image = document.getElementById(imageId);
 
@@ -815,6 +816,9 @@
       currentImage.style.height = '';
 
       resetAllImageDisplays();
+
+      // Make sure the top left image is correct by setting to old src
+      document.getElementById("img-top-left").src = topLeftImageCache.src;
 
       document.getElementById("denoise-strength").style.display = 'none';
       mode = 'txt2img';
@@ -1076,6 +1080,9 @@
         document.getElementById('img-top-right').src = 'data:image/png;base64,' + base64Images[1];
         document.getElementById('img-bottom-left').src = 'data:image/png;base64,' + base64Images[2];
         document.getElementById('img-bottom-right').src = 'data:image/png;base64,' + base64Images[3];
+
+        // Cache the top left image to be used when collapsing image
+        topLeftImageCache.src = 'data:image/png;base64,' + base64Images[0];
 
         // Set the title attribute of the img tags based on the prompt info
         document.getElementById('img-top-left').title = `${document.getElementById('prompt-input').value}.png`;
