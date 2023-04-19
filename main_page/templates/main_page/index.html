@@ -282,14 +282,25 @@
       </div>
 
       <!-- Images -->
-      <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-        onclick="expandImage('img-top-left', 'close-button')">
-      <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-        onclick="expandImage('img-top-right', 'close-button')">
-      <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-        onclick="expandImage('img-bottom-left', 'close-button')">
-      <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-        onclick="expandImage('img-bottom-right', 'close-button')">
+      <a id="download-top-left" href="#" download>
+        <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
+            onclick="expandImage('img-top-left', 'close-button')">
+    </a>
+    <a id="download-top-right" href="#" download>
+        <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
+            onclick="expandImage('img-top-right', 'close-button')">
+    </a>
+    <a id="download-bottom-left" href="#" download>
+        <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
+            onclick="expandImage('img-bottom-left', 'close-button')">
+    </a>
+    <a id="download-bottom-right" href="#" download>
+        <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
+            onclick="expandImage('img-bottom-right', 'close-button')">
+    </a>
+    
+
+
     </div>
 
     <!-- Prompt input box and advanced options button -->
@@ -994,6 +1005,12 @@
         document.getElementById('img-top-right').src = 'data:image/png;base64,' + base64Images[1];
         document.getElementById('img-bottom-left').src = 'data:image/png;base64,' + base64Images[2];
         document.getElementById('img-bottom-right').src = 'data:image/png;base64,' + base64Images[3];
+
+        // Set the download attribute of the img tags based on the prompt info
+        document.getElementById('download-top-left').download = `${document.getElementById('prompt-input').value}.png`;
+        document.getElementById('download-top-right').download = `${document.getElementById('prompt-input').value}.png`;
+        document.getElementById('download-bottom-left').download = `${document.getElementById('prompt-input').value}.png`;
+        document.getElementById('download-bottom-right').download = `${document.getElementById('prompt-input').value}.png`;
 
         // Unhide the images and enable generate button
         collapseImage("img-top-left", "close-button")
