@@ -32,20 +32,25 @@
   <link rel="shortcut icon" href="{% static 'main_page/favicon.ico' %}">
   <title>The best Sonic OC generator </title>
   <style>
-    /* Add the following styles */
-    input[type="text"],
-    select.form-select {
-      font-size: 1rem;
-      padding: 0.5rem 1rem;
+    body {
+      background-color: #2fa5e9;
+    }
+
+    .content-container {
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      padding-top: 3%;
     }
 
     .small-image {
       width: 100%;
       height: 100%;
-      object-fit: contain;
     }
 
+    /* Grid where images are */
     .image-grid {
+      /* Centers instructions in image grid */
       justify-content: center;
       align-items: center;
       display: grid;
@@ -60,68 +65,12 @@
       border-radius: 10px;
       background-color: #3880ec;
       position: relative;
-      gap: 4px;
+
+      /* Keeps image edges from going outside image-grid */
       overflow: hidden;
-      gap: 0;
-    }
 
-    #generated-images {
-      display: flex;
-      align-items: top;
-      justify-content: top;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-
-    .center-element {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 20px;
-    }
-
-    body {
-      background-color: #2fa5e9;
-    }
-
-    #prompt-input-box {
-      align-items: flex-start;
-      justify-content: top;
-      padding-left: 10px;
-      padding-bottom: 10px;
-    }
-
-    #prompt-input {
-      height: 5vh;
-    }
-
-    #button-addon2 {
-      height: 5vh;
-    }
-
-    .content-container {
-      display: flex;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      padding-top: 3%;
-    }
-
-    #advanced-options {
-      padding-left: 10px;
-      z-index: 1;
-      width: 5in;
-    }
-
-    .input-button-container {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      width: 5in;
-      padding-left: 10px;
-    }
-
-    .w-100 {
-      width: 200%;
+      /* Stops gap between images */
+      border: 0;
     }
 
     #loading-container {
@@ -132,33 +81,8 @@
       z-index: 1;
     }
 
-    .card {
-      background-color: #3880ec;
-      border: 0;
-    }
-
-    .card-body {
-      background-color: #2fa5e9;
-    }
-
-    .expanded-image {
-      grid-column: 1 / -1;
-      grid-row: 1 / -1;
-      z-index: 10;
-      transition: all 0.5s ease-in-out;
-      object-fit: cover;
-    }
-
-    #close-button {
-      display: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      padding: 10px;
-      font-size: 24px;
-      cursor: pointer;
-      z-index: 2;
-      object-fit: none;
+    #queue-position {
+      opacity: 70%;
     }
 
     #instructions {
@@ -170,12 +94,68 @@
       opacity: 70%;
     }
 
-    #queue-position {
-      opacity: 70%;
+    .expanded-image {
+      grid-column: 1 / -1;
+      grid-row: 1 / -1;
+      z-index: 10;
+      object-fit: cover;
+    }
+
+    /* Includes prompt input box, generate button and advanced options */
+    .input-button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 5in;
+      padding-left: 10px;
+    }
+
+    /* Includes prompt input box and generate button */
+    #prompt-input-box {
+      align-items: flex-start;
+      justify-content: top;
+      padding-left: 10px;
+      padding-bottom: 10px;
+    }
+
+    /* The input box itself where text is */
+    #prompt-input {
+      height: 5vh;
     }
 
     #denoise-strength {
       display: none;
+    }
+
+    #enable-inpainting {
+      display: none;
+    }
+
+    #advanced-options {
+      padding-left: 10px;
+      z-index: 1;
+      width: 5in;
+    }
+
+    .card {
+      background-color: #3880ec;
+      border: 0;
+    }
+
+    .card-body {
+      background-color: #2fa5e9;
+    }
+
+    #close-button {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 10px;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 100;
+      object-fit: none;
     }
 
     #error-modal {
@@ -189,6 +169,7 @@
       transform: translate(-50%, -50%);
       opacity: 0;
       transition: opacity 0.3s;
+      width: 50%;
     }
 
     .image-wrapper {
@@ -197,8 +178,9 @@
     }
 
     .image-wrapper:hover .middle-button {
-      opacity: 1;
+      opacity: 0.7;
     }
+
 
     @media (max-width: 480px) {
       .content-container {
@@ -228,13 +210,26 @@
         height: auto;
       }
 
-      #advanced-options {
-        width: 97vw;
-      }
-
       #prompt-input-box {
         padding-bottom: 5%;
         padding-left: 0;
+      }
+
+      #prompt-input {
+        height: 6vh;
+      }
+
+      #denoise-strength {
+        padding: 2vw;
+        width: 100vw;
+      }
+
+      #enable-inpainting {
+        display: none;
+      }
+
+      #advanced-options {
+        width: 97vw;
       }
 
       .FAQ {
@@ -256,11 +251,6 @@
         padding-left: 2vw;
         padding-right: 2vw;
       }
-
-      #denoise-strength {
-        padding: 2vw;
-        width: 100vw;
-      }
     }
   </style>
 </head>
@@ -271,14 +261,10 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">API Error</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p>There was an API error, if using a reference image, refresh page and use one without transparency. If not,
-            please check back later, backend may be down</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <p>There was an API error, if using a reference image, refresh the page and try using a different one.
+          <p></p>If not, refresh or check back later, backend may be down</p>
         </div>
       </div>
     </div>
@@ -293,6 +279,10 @@
       <!-- close button -->
       <button type="button" class="btn-close" aria-label="Close" id="close-button"
         onclick="collapseImage('close-button')"></button>
+
+      <!-- Canvas for inpainting -->
+      <canvas id="drawing-canvas" width="510" height="768" style="display: none; position: fixed; z-index: 200;"></canvas>
+
 
       <!-- Prompt instructions -->
       <div id="instructions">Type a prompt and hit generate to start! Or click/tap here to add an image to use as a
@@ -310,39 +300,39 @@
         </div>
       </div>
 
-      <!-- Images -->
-      <div class="image-wrapper" style="position: relative;">
-        <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
+    <!-- Images -->
+    <div class="image-wrapper" style="position: relative;">
+      <img id="img-top-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'" title=""
           onclick="expandImage('img-top-left', 'close-button')">
-        <button class="btn btn-primary middle-button" type="button" id="reference-top-left"
-          onclick="setReferenceImage('img-top-left')">Reference</button>
-      </div>
-      <div class="image-wrapper" style="position: relative;">
-        <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-          onclick="expandImage('img-top-right', 'close-button')">
-        <button class="btn btn-primary middle-button reference-buttons" type="button" id="reference-top-right"
-          onclick="setReferenceImage('img-top-right')">Reference</button>
-      </div>
-      <div class="image-wrapper" style="position: relative;">
-        <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-          onclick="expandImage('img-bottom-left', 'close-button')">
-        <button class="btn btn-primary middle-button" type="button" id="reference-bottom-left"
-          onclick="setReferenceImage('img-bottom-left')">Reference</button>
-      </div>
-      <div class="image-wrapper" style="position: relative;">
-        <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'"
-          onclick="expandImage('img-bottom-right', 'close-button')">
-        <button class="btn btn-primary middle-button" type="button" id="reference-bottom-right"
-          onclick="setReferenceImage('img-bottom-right')">Reference</button>
-      </div>
+      <button class="btn btn-primary middle-button" type="button" id="reference-top-left"
+        onclick="setReferenceImage('img-top-left')">Reference</button>
     </div>
+    <div class="image-wrapper" style="position: relative;">
+      <img id="img-top-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'" title=""
+          onclick="expandImage('img-top-right', 'close-button')">
+      <button class="btn btn-primary middle-button reference-buttons" type="button" id="reference-top-right"
+        onclick="setReferenceImage('img-top-right')">Reference</button>
+    </div>
+    <div class="image-wrapper" style="position: relative;">
+      <img id="img-bottom-left" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'" title=""
+          onclick="expandImage('img-bottom-left', 'close-button')">
+      <button class="btn btn-primary middle-button" type="button" id="reference-bottom-left"
+        onclick="setReferenceImage('img-bottom-left')">Reference</button>
+    </div>
+    <div class="image-wrapper" style="position: relative;">
+      <img id="img-bottom-right" src="" class="small-image" alt="Image goes here" onerror="this.style.display='none'" title=""
+          onclick="expandImage('img-bottom-right', 'close-button')">
+      <button class="btn btn-primary middle-button" type="button" id="reference-bottom-right"
+        onclick="setReferenceImage('img-bottom-right')">Reference</button>
+    </div>
+  </div>
 
     <!-- Prompt input box and advanced options button -->
     <div class="input-button-container">
-      <div id="prompt-input-box" class="input-group">
-        <input type="text" class="form-control" placeholder="Enter Prompt" aria-label="Enter Prompt"
-          aria-describedby="button-addon2" id="prompt-input">
-        <button class="btn btn-primary" type="button" id="button-addon2">Generate!</button>
+      <div id="prompt-input-box" class="input-group d-flex align-items-stretch">
+        <textarea class="form-control" placeholder="Enter Prompt" aria-label="Enter Prompt"
+          aria-describedby="button-addon2" id="prompt-input" rows="3"></textarea>
+        <button class="btn btn-primary d-flex align-items-center" type="button" id="button-addon2">Generate!</button>
       </div>
 
       <!-- Denoise strength -->
@@ -355,6 +345,17 @@
           </span>
         </label>
         <input type="range" class="form-range" min="0.1" max="0.95" value="0.7" step="0.05" id="custom-denoise">
+      </div>
+
+      <!-- inpaint switch -->
+      <div class="form-check form-switch" id="enable-inpainting">
+        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onclick="enableInpaintCanvas()">
+        <label class="form-check-label" for="flexSwitchCheckDefault">Inpaint</label>
+        <span class="ms-1 text-primary" data-bs-toggle="tooltip" data-bs-placement="top"
+          title="Allows you to draw on the image you uploaded using your mouse to specify what should be changed. The inpainted areas will be the only ones changed while the rest of the image is unaffected"
+          style="background-color: rgba(255, 255, 255, 0.8); padding: 2px 4px; border-radius: 50%; cursor: pointer;">
+          ?
+        </span>
       </div>
 
       <!-- Advanced options -->
@@ -375,17 +376,17 @@
           <div class="card card-body">
             <!-- Negative Prompt -->
             <div class="mb-3">
-              <label for="formGroupExampleInput" class="form-label">Negative Prompt
+              <label for="negative-prompt-input" class="form-label">Negative Prompt
                 <span class="ms-1 text-primary" data-bs-toggle="tooltip" data-bs-placement="top"
                   title="Add terms you want the AI to avoid when generating the image. Separate each term with a comma. By default a negative prompt is provided so this does not need to be modifed unless the below negative does not work well for you."
                   style="background-color: rgba(255, 255, 255, 0.8); padding: 2px 4px; border-radius: 50%; cursor: pointer;">
                   ?
                 </span>
               </label>
-
-              <input type="text" class="form-control" id="formGroupExampleInput"
-                placeholder="nsfw, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, signature, text, too many fingers, username, watermark,">
+              <textarea class="form-control" id="negative-prompt-input" rows="3"
+                placeholder="nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background">nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background</textarea>
             </div>
+
 
             <!-- Seed -->
             <div class="mb-3">
@@ -449,45 +450,53 @@
             </div>
             <div class="card-body">
               <p class="mb-0">Curent list is as follows.
-
-              <div class="row">
-                <div class="col col-md-4">
-                  <ul>
-                    <li>Sonic the hedgehog</li>
-                    <li>Amy Rose</li>
-                    <li>Tails the fox</li>
-                    <li>Knuckles the echidna</li>
-                    <li>Rouge the bat</li>
-                    <li>Sticks the badger</li>
-                    <li>Marine the Raccoon</li>
-                    <li>Jet the hawk</li>
-                  </ul>
+                <div class="row">
+                  <div class="col col-md-4">
+                    <ul>
+                      <li>Amy Rose</li>
+                      <li>Big the cat</li>
+                      <li>Blaze the cat</li>
+                      <li>Bunnie Rabbot</li>
+                      <li>Charmy the bee</li>
+                      <li>Cosmo the seedrian</li>
+                      <li>Cream the rabbit</li>
+                      <li>Espio the chameleon</li>
+                      <li>Honey the cat</li>
+                      <li>Jet the hawk</li>
+                      <li>Knuckles the echidna</li>
+                    </ul>
+                  </div>
+                  <div class="col col-md-4">
+                    <ul>
+                      <li>Lanolin the sheep</li>
+                      <li>Marine the Raccoon</li>
+                      <li>Metal Sonic</li>
+                      <li>Mighty the armadillo</li>
+                      <li>Mina Mongoose</li>
+                      <li>Mobian (Original characters in sonic style basically!)</li>
+                      <li>Nicole the Lynx</li>
+                      <li>Rouge the bat</li>
+                      <li>Sally Acorn</li>
+                      <li>Shadow the hedgehog</li>
+                      <li>Silver the hedgehog</li>
+                    </ul>
+                  </div>
+                  <div class="col col-md-4">
+                    <ul>
+                      <li>Sonic the hedgehog</li>
+                      <li>Sticks the badger</li>
+                      <li>Storm the albatross</li>
+                      <li>Surge the tenrec</li>
+                      <li>Tails the fox</li>
+                      <li>Tangle the lemur</li>
+                      <li>Tikal the echidna</li>
+                      <li>Vanilla the rabbit</li>
+                      <li>Vector the crocodile</li>
+                      <li>Wave the swallow</li>
+                      <li>Whisper the wolf</li>
+                    </ul>
+                  </div>
                 </div>
-                <div class="col col-md-4">
-                  <ul>
-                    <li>Whisper the wolf</li>
-                    <li>Silver the hedgehog</li>
-                    <li>Blaze the cat</li>
-                    <li>Vanilla the rabbit</li>
-                    <li>Cream the rabbit</li>
-                    <li>Charmy the bee</li>
-                    <li>Espio the chameleon</li>
-                    <li>Vector the crocodile</li>
-                  </ul>
-                </div>
-                <div class="col col-md-4">
-                  <ul>
-                    <li>Shadow the hedgehog</li>
-                    <li>Sally Acorn</li>
-                    <li>Tangle the lemur</li>
-                    <li>Mobian (Original characters in sonic style basically!)</li>
-                    <li>Cosmo the seedrian</li>
-                    <li>Tikal the echidna</li>
-                    <li>Honey the cat</li>
-                    <li>Bunnie Rabbot</li>
-                  </ul>
-                </div>
-              </div>
               </p>
             </div>
           </div>
@@ -525,10 +534,10 @@
                 data-name="bmc-button" data-slug="pablocastr6" data-color="#5F7FFF" data-emoji="" data-font="Cookie"
                 data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff"
                 data-coffee-color="#FFDD00"></script>
-              <!-- <a href="https://www.patreon.com/bePatron?u=37673970"
-                data-patreon-widget-type="become-patron-button">Become a Patron!</a>
-              <script async src="https://c6.patreon.com/becomePatronButton.bundle.js"></script> -->
-              </p>
+
+                Join the discord for model updates, share images, and chat! Special thanks to "Mecha from the '80s" and "RinMaru" for helping gather training images!</p>
+
+              <iframe src="https://discord.com/widget?id=1095514548112461924&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
             </div>
           </div>
           <!-- Add more questions and answers as needed -->
@@ -586,7 +595,9 @@
     function handleImageSelect(event) {
       const closeButton = document.getElementById("close-button");
       const denoiseStrength = document.getElementById("denoise-strength");
+      const inpaint = document.getElementById("enable-inpainting");
       const imageFile = event.target.files[0];
+
       if (imageFile) {
         const reader = new FileReader();
         reader.onload = function (e) {
@@ -596,10 +607,17 @@
           // UI stuff
           document.getElementById("instructions").classList.add("d-none");
           expandImage("img-top-left", "close-button")
+          document.getElementById('img-top-left').style.width = '100%';
+          document.getElementById('img-top-left').style.height = 'auto';
           document.getElementById('img-top-left').style.display = 'block';
           document.querySelector(".image-wrapper").style.display = 'inline-block';
           closeButton.style.display = "none";
-          denoiseStrength.style.display = 'block'
+          denoiseStrength.style.display = 'block';
+
+          // Dont show inpainting for mobile devices
+          if (!isMobileDevice()) {
+            inpaint.style.display = 'block';
+          }
 
           // Get the base64 string from the data URL
           base64Str = e.target.result.split(",")[1];
@@ -635,6 +653,76 @@
       // Get the base64 string from the data URL
       base64Str = image.src.split(",")[1];
       mode = 'img2img';
+    }
+
+    // inpainting 
+    const canvas = document.getElementById("drawing-canvas");
+    const ctx = canvas.getContext("2d");
+    ctx.lineWidth = 40; // Increase the value for a larger drawn area
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    let drawing = false;
+
+    canvas.addEventListener("mousedown", (e) => {
+      drawing = true;
+      ctx.beginPath();
+      ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    });
+
+    canvas.addEventListener("mousemove", (e) => {
+      if (!drawing) return;
+      ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+      ctx.stroke();
+    });
+
+    canvas.addEventListener("mouseup", () => {
+      drawing = false;
+    });
+
+    function enableDrawing() {
+      canvas.style.display = "block";
+    }
+
+    function disableDrawing() {
+      canvas.style.display = "none";
+    }
+
+    function getDrawingBase64() {
+      ctx.globalCompositeOperation = "destination-over";
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = "source-over";
+      return canvas.toDataURL().split(",")[1];
+    }
+
+    let inpainting = false;
+    const enableInpaintCanvas = () => {
+      inpainting = !inpainting;
+      if (inpainting) {
+        mode = 'inpainting';
+        const imageGrid = document.querySelector('.image-grid');
+
+        imageGrid.removeEventListener("click", handleImageGridClick);
+        enableDrawing();
+        document.getElementById("drawing-canvas").style.display = "block";
+        document.getElementById("denoise-strength").style.display = "none";
+      }
+      else {
+        mode = 'img2img';
+
+        imageGrid.addEventListener("click", handleImageGridClick);
+        disableDrawing()
+        document.getElementById("drawing-canvas").style.display = "none";
+        document.getElementById("denoise-strength").style.display = "block";
+      }
+    };
+
+    // Check if user is using mobile device
+    function isMobileDevice() {
+      return (
+        typeof window.orientation !== "undefined" ||
+        navigator.userAgent.indexOf("IEMobile") !== -1
+      );
     }
 
     // Info buttons
@@ -808,6 +896,12 @@
       // Hide images
       hideAllImages();
 
+      // Hide close-image button if it was on
+      document.getElementById("close-button").style.display = 'none';
+
+      // Hide inpainting canvas if it was on
+      document.getElementById("drawing-canvas").style.display = "none";
+
       // Show loading bar
       document.getElementById("instructions").classList.add("d-none");
       document.getElementById("loading-container").classList.remove("d-none");
@@ -829,7 +923,7 @@
         case '1':
           imageWidth = 768; // Landscape
           imageHeight = 512;
-          model = "Metal079--SonicDiffusionV3-Beta__768x512x4"
+          model = "SonicDiffusionV3-Delta__768x512x4"
           break;
         case '2':
           imageWidth = 512;
@@ -839,16 +933,21 @@
         case '3':
           imageWidth = 512; // Portrait
           imageHeight = 768;
-          model = "Metal079--SonicDiffusionV3-Beta__512x768x4"
+          model = "SonicDiffusionV3-Delta__512x768x4"
           break;
         default:
           imageWidth = 512;
           imageHeight = 768;
-          model = "Metal079--SonicDiffusionV3-Beta__512x768x4"
+          model = "SonicDiffusionV3-Delta__512x768x4"
       }
 
       let payload;
       let response;
+
+      let drawingBase64;
+      if (mode == 'inpainting') {
+        drawingBase64 = getDrawingBase64();
+      }
 
       switch (mode) {
         case 'txt2img':
@@ -856,7 +955,7 @@
             "data": {
               "prompt": document.getElementById('prompt-input').value,
               "steps": 20,
-              "negative_prompt": document.getElementById('formGroupExampleInput').value || "nsfw, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, signature, text, too many fingers, username, watermark,",
+              "negative_prompt": document.getElementById('negative-prompt-input').value,
               "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
               "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
               "batch_size": 4,
@@ -864,7 +963,8 @@
               "height": imageHeight || 768,
               "scheduler": 7
             },
-            "model": model
+            "model": model,
+            "save_image": false,
           }
 
           // Call Volta API
@@ -883,7 +983,7 @@
               "prompt": document.getElementById('prompt-input').value,
               "image": base64Str,
               "steps": 30,
-              "negative_prompt": document.getElementById('formGroupExampleInput').value || "EasyNegative, (worst quality, low quality, normal quality:1.4), bad anatomy, bad body, bad feet, bad hands, bad proportions, blurry, cropped, cross-eyed, deformed, error, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, fewer digits, fused fingers, gross proportions, jpeg artifacts, long neck, long body, lowres, malformed limbs, missing arms, missing fingers, missing legs, mutated hands, mutation, polar lowres, poorly drawn face, poorly drawn hands, pubic hair, signature, text, too many fingers, username, watermark,red salive, blood, bad_prompt_version2",
+              "negative_prompt": document.getElementById('negative-prompt-input').value,
               "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
               "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
               "batch_size": 4,
@@ -892,11 +992,41 @@
               "scheduler": 13,
               "strength": document.getElementById('custom-denoise').value || 0.7
             },
-            "model": model
+            "model": model,
+            "save_image": false,
           }
 
           // Call Volta API
           response = await fetch('img2img/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+          break;
+
+        case 'inpainting':
+          payload = {
+            "data": {
+              "prompt": document.getElementById('prompt-input').value,
+              "image": base64Str,
+              "mask_image": drawingBase64,
+              "scheduler": 7,
+              "negative_prompt": document.getElementById('negative-prompt-input').value,
+              "width": imageWidth || 512,
+              "height": imageHeight || 768,
+              "steps": 40,
+              "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
+              "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
+              "batch_size": 4,
+              "strength": 1
+            },
+            "model": "SonicDiffusionV3-Delta",
+          }
+
+          // Call Volta API
+          response = await fetch('inpainting/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -909,7 +1039,9 @@
       // Set back to txt2img mode
       mode = 'txt2img';
       const denoiseStrength = document.getElementById("denoise-strength");
-      denoiseStrength.style.display = 'none'
+      const inpaint = document.getElementById("enable-inpainting");
+      denoiseStrength.style.display = 'none';
+      inpaint.style.display = 'none';
 
       // Handle the API response
       if (response.ok) {
@@ -925,6 +1057,12 @@
         document.getElementById('img-top-right').src = 'data:image/png;base64,' + base64Images[1];
         document.getElementById('img-bottom-left').src = 'data:image/png;base64,' + base64Images[2];
         document.getElementById('img-bottom-right').src = 'data:image/png;base64,' + base64Images[3];
+
+        // Set the title attribute of the img tags based on the prompt info
+        document.getElementById('img-top-left').title = `${document.getElementById('prompt-input').value}.png`;
+        document.getElementById('img-top-right').title = `${document.getElementById('prompt-input').value}.png`;
+        document.getElementById('img-bottom-left').title = `${document.getElementById('prompt-input').value}.png`;
+        document.getElementById('img-bottom-right').title = `${document.getElementById('prompt-input').value}.png`;
 
         // Unhide the images and enable generate button
         collapseImage("img-top-left", "close-button")

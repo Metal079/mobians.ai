@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobians.ai maintenance page</title>
+    <style>
+        body {
+            background-color: #2fa5e9;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>The site is currently undergoing maintenance. </h1>
+    <h2><p>A new model is being trained and improvements are being made to the back-end infrastructure to improve image generation speed and stability.</p>
+    <p>This should take a few days.</p></h2>
+
+    <P>In the meantime, enjoy this AI-generated video of Sonic dancing</P>
+
+    <video autoplay loop muted playsinline>
+        <source src="{% static 'maintenance_page/sonic_morph.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+</body>
+
+</html>
