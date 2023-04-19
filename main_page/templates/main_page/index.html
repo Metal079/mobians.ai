@@ -341,8 +341,8 @@
     <div class="input-button-container">
       <div id="prompt-input-box" class="input-group d-flex align-items-stretch">
         <textarea class="form-control" placeholder="Enter Prompt" aria-label="Enter Prompt"
-          aria-describedby="button-addon2" id="prompt-input" rows="3"></textarea>
-        <button class="btn btn-primary d-flex align-items-center" type="button" id="button-addon2">Generate!</button>
+          aria-describedby="generate-button" id="prompt-input" rows="3"></textarea>
+        <button class="btn btn-primary d-flex align-items-center" type="button" id="generate-button" onclick="generateImage()">Generate!</button>
       </div>
 
       <!-- Denoise strength -->
@@ -372,11 +372,11 @@
       <div id="advanced-options">
         <button class="btn btn-primary dropdown-toggle" data-bs-toggle="collapse" href="#collapseExample" role="button"
           aria-expanded="false" aria-controls="collapseExample">
-          Advanced Options
+          Options
         </button>
         
         <!-- Re-generate with reference button -->
-        <button class="btn btn-success" type="button" onclick="generateImage()">Retry With Same Reference</button>
+        <button class="btn btn-success" type="button" onclick="redoWithSameReference()" id="redo-with-reference-button" style="display: none;">Generate W/Prev Reference</button>
 
         <div class="collapse w-100" id="collapseExample">
           <label for="floatingSelect">Image aspect-ratio</label>
@@ -428,8 +428,6 @@
           </div>
         </div>
       </div>
-
-
     </div>
   </div>
 
@@ -649,9 +647,13 @@
     }
 
     // Used when clicking reference image button
-    let topLeftImageCache = new Image();;
+    let referenceFlag = false;
+    let topLeftImageCache = new Image();
     function setReferenceImage(imageId) {
       const image = document.getElementById(imageId);
+
+      mode = 'img2img';
+      referenceFlag = true;
 
       // Set the image source to the data URL
       document.getElementById("img-top-left").src = image.src;
@@ -670,7 +672,6 @@
 
       // Get the base64 string from the data URL
       base64Str = image.src.split(",")[1];
-      mode = 'img2img';
     }
 
     // inpainting 
@@ -917,10 +918,20 @@
       document.getElementById('denoise-value').textContent = event.target.value;
     });
 
+    // Redo generation with same reference image
+    function redoWithSameReference(){
+      referenceFlag = true;
+      generateImage();
+    }
+
     // Send the request to the server for generated images
-    document.getElementById('button-addon2').addEventListener('click', async function () {
+    async function generateImage(){
+      if (referenceFlag == true) {
+        mode = 'img2img';
+      }
+
       // Disable the generate button until result is returned
-      document.getElementById('button-addon2').disabled = true;
+      document.getElementById('generate-button').disabled = true;
 
       // Hide images
       hideAllImages();
@@ -1081,6 +1092,15 @@
         // When the image is retrieved, hide the loading bar and queue
         document.getElementById("loading-container").classList.add("d-none");
 
+        // If reference was not used, hide the redo with reference button
+        if (referenceFlag){
+          document.getElementById('redo-with-reference-button').style.display = 'block';
+          referenceFlag = false;
+        }
+        else{
+          document.getElementById('redo-with-reference-button').style.display = 'none';
+        }
+
         // Set the src attribute of the image elements to the base64-encoded images
         document.getElementById('img-top-left').src = 'data:image/png;base64,' + base64Images[0];
         document.getElementById('img-top-right').src = 'data:image/png;base64,' + base64Images[1];
@@ -1099,7 +1119,7 @@
         // Unhide the images and enable generate button
         collapseImage("img-top-left", "close-button")
         resetAllImageDisplays();
-        document.getElementById('button-addon2').disabled = false;
+        document.getElementById('generate-button').disabled = false;
 
         // unhide reference buttons
         document.getElementById("reference-top-left").style.display = 'block';
@@ -1117,8 +1137,8 @@
         const error_modal = document.getElementById("error-modal");
         error_modal.style.display = 'block'
       }
-    });
-
+    };
+    
   </script>
 </body>
 
