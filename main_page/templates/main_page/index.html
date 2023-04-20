@@ -376,7 +376,7 @@
         </button>
         
         <!-- Re-generate with reference button -->
-        <button class="btn btn-success" type="button" onclick="redoWithSameReference()" id="redo-with-reference-button" style="display: none;">Generate W/Prev Reference</button>
+        <button class="btn btn-success" type="button" onclick="redoWithSameReference()" id="redo-with-reference-button" style="display: none;">Regenerate W/Prev Reference</button>
 
         <div class="collapse w-100" id="collapseExample">
           <label for="floatingSelect">Image aspect-ratio</label>
@@ -934,6 +934,7 @@
 
       // Disable the generate button until result is returned
       document.getElementById('generate-button').disabled = true;
+      document.getElementById('redo-with-reference-button').disabled = true;
 
       // Hide images
       hideAllImages();
@@ -1122,6 +1123,7 @@
         collapseImage("img-top-left", "close-button")
         resetAllImageDisplays();
         document.getElementById('generate-button').disabled = false;
+        document.getElementById('redo-with-reference-button').disabled = false;
 
         // unhide reference buttons
         document.getElementById("reference-top-left").style.display = 'block';
