@@ -642,6 +642,7 @@
           // Get the base64 string from the data URL
           base64Str = e.target.result.split(",")[1];
           mode = 'img2img';
+          referenceFlag = true;
         };
         reader.readAsDataURL(imageFile);
       }
