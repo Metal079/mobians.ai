@@ -38,7 +38,7 @@ def add_watermark(image, watermark_text, opacity):
 
     # Overlay watermark on the original image
     image_with_watermark = Image.alpha_composite(image.convert("RGBA"), watermark)
-    return image_with_watermark.convert("RGB")  # Convert back to RGB mode
+    return image_with_watermark
 
 @csrf_exempt
 def txt2img(request):
@@ -61,7 +61,7 @@ def txt2img(request):
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
-        image_with_watermark.save(img_io, "WEBP", quality=90)
+        image_with_watermark.save(img_io, "PNG")
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
@@ -103,7 +103,7 @@ def img2img(request):
         image_with_watermark = add_watermark(image, watermark_text, opacity)
 
         # Change to PNG to preserve png info
-        image_with_watermark.save(img_io, "JPEG", quality=90)
+        image_with_watermark.save(img_io, "PNG")
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
@@ -124,7 +124,7 @@ def inpainting(request):
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
-        image.save(img_io, "JPEG", quality=90)
+        image.save(img_io, "PNG")
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
