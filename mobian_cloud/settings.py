@@ -154,3 +154,5 @@ CSRF_COOKIE_SECURE = True
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_NAME = 'your_cookie_name'
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
