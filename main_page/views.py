@@ -44,7 +44,7 @@ def add_watermark(image, watermark_text, opacity):
 def txt2img(request):
     data = json.loads(request.body)
 
-    response = requests.post(url=f'{API_IP}/api/generate/txt2img', json=data)
+    response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
     r = response.json()
 
     # Process the data here

@@ -68,7 +68,7 @@
       grid-template-rows: 1fr 1fr;
       margin-left: 20%;
 
-      height: 768px;
+      height: 512px;
       width: 512px;
       box-sizing: border-box;
       border: 1px solid #3880ec;
@@ -200,7 +200,7 @@
 
       .image-grid {
         width: 100vw;
-        height: 150vw;
+        height: 100vw;
         max-width: max-content;
         max-height: max-content;
         aspect-ratio: 1 / 1;
@@ -382,9 +382,9 @@
           <label for="floatingSelect">Image aspect-ratio</label>
           <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
             onchange="changeAspectRatio()">
+            <option value="2">Square</option>
             <option value="3">Portrait</option>
             <option value="1">Landscape</option>
-            <!-- <option value="2">Square</option> -->
           </select>
 
           <div class="card card-body">
@@ -966,22 +966,22 @@
         case '1':
           imageWidth = 768; // Landscape
           imageHeight = 512;
-          model = "SonicDiffusionV3-Delta__768x512x4"
+          model = "SonicDiffusionV3-Delta"
           break;
         case '2':
           imageWidth = 512;
           imageHeight = 512; // Square
-          model = "Metal079--SonicDiffusionV3-Beta__512x512x4"
+          model = "SonicDiffusionV3-Delta__512x512x4"
           break;
         case '3':
           imageWidth = 512; // Portrait
           imageHeight = 768;
-          model = "SonicDiffusionV3-Delta__512x768x4"
+          model = "SonicDiffusionV3-Delta"
           break;
         default:
           imageWidth = 512;
-          imageHeight = 768;
-          model = "SonicDiffusionV3-Delta__512x768x4"
+          imageHeight = 512;
+          model = "SonicDiffusionV3-Delta"
       }
 
       let payload;
@@ -997,17 +997,17 @@
           payload = {
             "data": {
               "prompt": document.getElementById('prompt-input').value,
+              "scheduler": 7,
               "steps": 20,
               "negative_prompt": document.getElementById('negative-prompt-input').value,
-              "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
-              "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
-              "batch_size": 4,
               "width": imageWidth || 512,
               "height": imageHeight || 768,
-              "scheduler": 7
+              "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
+              "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
+              "batch_size": 4
             },
             "model": model,
-            "save_image": false,
+            "save_image": false
           }
 
           // Call Volta API
