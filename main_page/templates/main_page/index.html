@@ -225,6 +225,18 @@
         padding-left: 0;
       }
 
+      .resizable-textarea {
+        min-height: 100px;
+        min-width: 100%;
+      }
+
+      .resizable-textarea::-webkit-resizer {
+        background-color: rgba(0, 0, 0, 0.5);
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+      }
+
       #prompt-input {
         height: 6vh;
       }
@@ -340,7 +352,7 @@
     <!-- Prompt input box and advanced options button -->
     <div class="input-button-container">
       <div id="prompt-input-box" class="input-group d-flex align-items-stretch">
-        <textarea class="form-control" placeholder="Enter Prompt" aria-label="Enter Prompt"
+        <textarea class="form-control resizable-textarea" placeholder="Enter Prompt" aria-label="Enter Prompt"
           aria-describedby="generate-button" id="prompt-input" rows="3"></textarea>
         <button class="btn btn-primary d-flex align-items-center" type="button" id="generate-button" onclick="generateImage()">Generate!</button>
       </div>
