@@ -6,3 +6,4 @@ python-dotenv
 whitenoise
 gevent
 gunicorn
+eventlet
