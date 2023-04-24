@@ -68,7 +68,7 @@
       grid-template-rows: 1fr 1fr;
       margin-left: 20%;
 
-      height: 512px;
+      height: 768px;
       width: 512px;
       box-sizing: border-box;
       border: 1px solid #3880ec;
@@ -394,9 +394,9 @@
           <label for="floatingSelect">Image aspect-ratio</label>
           <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
             onchange="changeAspectRatio()">
-            <option value="2">Square</option>
             <option value="3">Portrait</option>
             <option value="1">Landscape</option>
+            <option value="2">Square</option>
           </select>
 
           <div class="card card-body">
@@ -978,7 +978,7 @@
         case '1':
           imageWidth = 768; // Landscape
           imageHeight = 512;
-          model = "SonicDiffusionV3-Delta"
+          model = "SonicDiffusionV3-Delta__768x512x4"
           break;
         case '2':
           imageWidth = 512;
@@ -988,12 +988,12 @@
         case '3':
           imageWidth = 512; // Portrait
           imageHeight = 768;
-          model = "SonicDiffusionV3-Delta"
+          model = "SonicDiffusionV3-Delta__512x768x4"
           break;
         default:
           imageWidth = 512;
-          imageHeight = 512;
-          model = "SonicDiffusionV3-Delta"
+          imageHeight = 768;
+          model = "SonicDiffusionV3-Delta__512x768x4"
       }
 
       let payload;
