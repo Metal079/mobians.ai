@@ -4,5 +4,5 @@ pillow
 psycopg2
 python-dotenv
 whitenoise
-gunicorn
 gevent
+gunicorn
