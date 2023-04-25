@@ -294,7 +294,7 @@
 
   <!-- Image box for generations -->
   <div class="content-container">
-    <div class="image-grid" ondragover="allowDrop(event)" ondrop="handleDrop(event)">
+    <div class="image-grid" ondragover="allowDrop(event)">
       <!-- Upload images -->
       <input type="file" name="image" id="image-upload" accept="image/*" style="display: none;">
 
@@ -659,6 +659,15 @@
       }
     }
 
+    // Disable drago and drop image upload
+    function disableImageUpload() {
+      imageGrid.removeEventListener("click", handleImageGridClick);
+      imageGrid.removeEventListener("dragover", allowDrop);
+      imageGrid.removeEventListener("drop", drop);
+      imageInput.removeEventListener("change", handleImageInputChange);
+    }
+
+
     // Used when clicking reference image button
     let prev_mode;
     let topLeftImageCache = new Image();
@@ -770,7 +779,7 @@
       else {
         mode = 'img2img';
 
-        imageGrid.addEventListener("click", handleImageGridClick);
+        // imageGrid.addEventListener("click", handleImageGridClick);
         disableDrawing()
         document.getElementById("drawing-canvas").style.display = "none";
         document.getElementById("denoise-strength").style.display = "block";
@@ -867,8 +876,10 @@
 
       // Make sure the top left image is correct by setting to old src
       document.getElementById("img-top-left").src = topLeftImageCache.src;
-
-      document.getElementById("denoise-strength").style.display = 'none';
+      
+      // get rid of inpaint on close-button
+      document.getElementById("enable-inpainting").style.display = 'none';
+      
       mode = 'txt2img';
     }
 
@@ -1127,22 +1138,39 @@
         if (mode == 'img2img'){
           document.getElementById('redo-with-reference-button').style.display = 'inline-block';
           prev_mode = 'img2img';
+
+          document.getElementById("denoise-strength").style.display = 'block';
+
+          // Dont show inpainting for mobile devices
+          // if (!isMobileDevice()) {
+          //   document.getElementById("enable-inpainting").style.display = 'block';
+          // }
         }
         else if (mode == 'inpainting'){
           document.getElementById('redo-with-reference-button').style.display = 'inline-block';
           prev_mode = 'inpainting';
+
+          document.getElementById("denoise-strength").style.display = 'block';
+
+          // Dont show inpainting for mobile devices
+          // if (!isMobileDevice()) {
+          //   document.getElementById("enable-inpainting").style.display = 'block';
+          // }
         }
         else{
           document.getElementById('redo-with-reference-button').style.display = 'none';
           prev_mode = 'txt2img';
-        }
 
-        // Set back to txt2img mode
-        mode = 'txt2img';
-        const denoiseStrength = document.getElementById("denoise-strength");
-        const inpaint = document.getElementById("enable-inpainting");
-        denoiseStrength.style.display = 'none';
-        inpaint.style.display = 'none';
+          // Hide the reference image options
+          document.getElementById("denoise-strength").style.display = 'none';
+          document.getElementById("enable-inpainting").style.display = 'none';
+        }
+        
+        // Disable the image upload feature after an image has been uploaded
+        disableImageUpload();
+
+        // Hide inpainting 
+        document.getElementById("enable-inpainting").style.display = 'none';
 
         // Set the src attribute of the image elements to the base64-encoded images
         document.getElementById('img-top-left').src = 'data:image/png;base64,' + base64Images[0];
@@ -1175,7 +1203,6 @@
         document.querySelectorAll(".image-wrapper").forEach(wrapper => {
           wrapper.style.display = "inline-block";
         });;
-
       } else {
         console.error(`Error: ${response.status}`); // Handle the error
         const error_modal = document.getElementById("error-modal");
