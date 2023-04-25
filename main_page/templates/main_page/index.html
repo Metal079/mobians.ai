@@ -654,20 +654,18 @@
           // Get the base64 string from the data URL
           base64Str = e.target.result.split(",")[1];
           mode = 'img2img';
-          referenceFlag = true;
         };
         reader.readAsDataURL(imageFile);
       }
     }
 
     // Used when clicking reference image button
-    let referenceFlag = false;
+    let prev_mode;
     let topLeftImageCache = new Image();
     function setReferenceImage(imageId) {
       const image = document.getElementById(imageId);
 
       mode = 'img2img';
-      referenceFlag = true;
 
       // Set the image source to the data URL
       document.getElementById("img-top-left").src = image.src;
@@ -683,6 +681,11 @@
       document.getElementById("reference-top-right").style.display = 'none';
       document.getElementById("reference-bottom-left").style.display = 'none';
       document.getElementById("reference-bottom-right").style.display = 'none';
+
+      // Dont show inpainting for mobile devices
+      if (!isMobileDevice()) {
+        document.getElementById("enable-inpainting").style.display = 'block';
+      }
 
       // Get the base64 string from the data URL
       base64Str = image.src.split(",")[1];
@@ -719,6 +722,30 @@
     function disableDrawing() {
       canvas.style.display = "none";
     }
+
+    canvas.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      drawing = true;
+      ctx.beginPath();
+      ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+
+      // Set the globalCompositeOperation based on the mouse button
+      ctx.globalCompositeOperation = e.button === 2 ? "destination-out" : "source-over";
+    });
+
+    canvas.addEventListener("mousemove", (e) => {
+      if (!drawing) return;
+      ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+      ctx.stroke();
+    });
+
+    canvas.addEventListener("mouseup", () => {
+      drawing = false;
+    });
+
+    canvas.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
 
     function getDrawingBase64() {
       ctx.globalCompositeOperation = "destination-over";
@@ -934,16 +961,12 @@
 
     // Redo generation with same reference image
     function redoWithSameReference(){
-      referenceFlag = true;
+      mode = prev_mode;
       generateImage();
     }
 
     // Send the request to the server for generated images
     async function generateImage(){
-      if (referenceFlag == true) {
-        mode = 'img2img';
-      }
-
       // Disable the generate button until result is returned
       document.getElementById('generate-button').disabled = true;
       document.getElementById('redo-with-reference-button').disabled = true;
@@ -1091,13 +1114,6 @@
           break;
       }
 
-      // Set back to txt2img mode
-      mode = 'txt2img';
-      const denoiseStrength = document.getElementById("denoise-strength");
-      const inpaint = document.getElementById("enable-inpainting");
-      denoiseStrength.style.display = 'none';
-      inpaint.style.display = 'none';
-
       // Handle the API response
       if (response.ok) {
         const data = await response.json(); // Parse the JSON response
@@ -1108,13 +1124,25 @@
         document.getElementById("loading-container").classList.add("d-none");
 
         // If reference was not used, hide the redo with reference button
-        if (referenceFlag){
+        if (mode == 'img2img'){
           document.getElementById('redo-with-reference-button').style.display = 'inline-block';
-          referenceFlag = false;
+          prev_mode = 'img2img';
+        }
+        else if (mode == 'inpainting'){
+          document.getElementById('redo-with-reference-button').style.display = 'inline-block';
+          prev_mode = 'inpainting';
         }
         else{
           document.getElementById('redo-with-reference-button').style.display = 'none';
+          prev_mode = 'txt2img';
         }
+
+        // Set back to txt2img mode
+        mode = 'txt2img';
+        const denoiseStrength = document.getElementById("denoise-strength");
+        const inpaint = document.getElementById("enable-inpainting");
+        denoiseStrength.style.display = 'none';
+        inpaint.style.display = 'none';
 
         // Set the src attribute of the image elements to the base64-encoded images
         document.getElementById('img-top-left').src = 'data:image/png;base64,' + base64Images[0];

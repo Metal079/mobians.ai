@@ -114,6 +114,21 @@ def img2img(request):
 def inpainting(request):
     data = json.loads(request.body)
 
+    # Convert base64 string to image to remove alpha channel if needed
+    received_image = Image.open(io.BytesIO(base64.b64decode(data['data']['image'].split(",", 1)[0])))
+    if received_image.mode == 'RGBA':
+        buffer = io.BytesIO()
+        
+        # Seperate alpha channel and add white background
+        background = Image.new('RGBA', received_image.size, (255, 255, 255))
+        alpha_composite = Image.alpha_composite(background, received_image).convert('RGB')
+        alpha_composite.save(buffer, format='PNG')
+
+        # Convert received_image back to base64 string
+        buffer.seek(0)
+        encoded_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        data['data']['image'] = encoded_image
+
     response = requests.post(url=f'{API_IP}api/generate/inpainting', json=data)
     r = response.json()
 
