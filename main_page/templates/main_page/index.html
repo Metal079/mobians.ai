@@ -283,6 +283,8 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">API Error</h5>
+          <!-- Add close button to the modal header -->
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <p>There was an API error, if using a reference image, refresh the page and try using a different one.
@@ -291,6 +293,7 @@
       </div>
     </div>
   </div>
+  
 
   <!-- Image box for generations -->
   <div class="content-container">
@@ -1205,8 +1208,8 @@
         });;
       } else {
         console.error(`Error: ${response.status}`); // Handle the error
-        const error_modal = document.getElementById("error-modal");
-        error_modal.style.display = 'block'
+        const errorModal = new bootstrap.Modal(document.getElementById("error-modal"));
+        errorModal.show();
       }
     };
     
