@@ -4,7 +4,7 @@ from django.template import loader
 class MaintenanceMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-        self.maintenance_mode = True
+        self.maintenance_mode = False
 
     def __call__(self, request):
         if self.maintenance_mode:

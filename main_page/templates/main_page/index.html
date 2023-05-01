@@ -68,7 +68,7 @@
       grid-template-rows: 1fr 1fr;
       margin-left: 20%;
 
-      height: 768px;
+      height: 512px;
       width: 512px;
       box-sizing: border-box;
       border: 1px solid #3880ec;
@@ -200,7 +200,7 @@
 
       .image-grid {
         width: 100vw;
-        height: 150vw;
+        height: 100vw;
         max-width: max-content;
         max-height: max-content;
         aspect-ratio: 1 / 1;
@@ -397,9 +397,10 @@
           <label for="floatingSelect">Image aspect-ratio</label>
           <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
             onchange="changeAspectRatio()">
-            <option value="3">Portrait</option>
-            <option value="1">Landscape</option>
             <option value="2">Square</option>
+            <option value="1">Landscape</option>
+            <option value="3">Portrait</option>
+
           </select>
 
           <div class="card card-body">
@@ -413,7 +414,7 @@
                 </span>
               </label>
               <textarea class="form-control" id="negative-prompt-input" rows="3"
-                placeholder="nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background">nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, extra digit, extra fingers, extra legs, extra limbs, extra digit, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background</textarea>
+                placeholder="nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, speech bubble, extra legs, extra limbs, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background">nsfw, worst quality, low quality, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, speech bubble, extra legs, extra limbs, bad proportions, missing fingers, missing legs, poorly drawn hands, signature, text, bad feet, watermark, flat background</textarea>
             </div>
 
 
@@ -1015,22 +1016,22 @@
         case '1':
           imageWidth = 768; // Landscape
           imageHeight = 512;
-          model = "SonicDiffusionV3-Delta__768x512x4"
+          model = "sonicDiffusionV3_epsilon_cleaned-ep102__768x512x4"
           break;
         case '2':
           imageWidth = 512;
           imageHeight = 512; // Square
-          model = "SonicDiffusionV3-Delta__512x512x4"
+          model = "sonicDiffusionV3_epsilon_cleaned-ep102__512x512x4"
           break;
         case '3':
           imageWidth = 512; // Portrait
           imageHeight = 768;
-          model = "SonicDiffusionV3-Delta__512x768x4"
+          model = "sonicDiffusionV3_epsilon_cleaned-ep102__512x768x4"
           break;
         default:
           imageWidth = 512;
-          imageHeight = 768;
-          model = "SonicDiffusionV3-Delta__512x768x4"
+          imageHeight = 512;
+          model = "sonicDiffusionV3_epsilon_cleaned-ep102__512x512x4"
       }
 
       let payload;
@@ -1114,7 +1115,7 @@
               "batch_size": 4,
               "strength": 1
             },
-            "model": "SonicDiffusionV3-Delta",
+            "model": "sonicDiffusionV3_epsilon_cleaned-ep102",
           }
 
           // Call Volta API
