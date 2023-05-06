@@ -1055,7 +1055,7 @@
             "data": {
               "prompt": document.getElementById('prompt-input').value,
               "scheduler": 7,
-              "steps": 20,
+              "steps": 15,
               "negative_prompt": document.getElementById('negative-prompt-input').value,
               "width": imageWidth || 512,
               "height": imageHeight || 768,
@@ -1082,7 +1082,7 @@
             "data": {
               "prompt": document.getElementById('prompt-input').value,
               "image": base64Str,
-              "steps": 30,
+              "steps": 20,
               "negative_prompt": document.getElementById('negative-prompt-input').value,
               "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
               "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
@@ -1116,7 +1116,7 @@
               "negative_prompt": document.getElementById('negative-prompt-input').value,
               "width": imageWidth || 512,
               "height": imageHeight || 768,
-              "steps": 40,
+              "steps": 20,
               "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
               "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
               "batch_size": 4,
