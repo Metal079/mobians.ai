@@ -306,7 +306,7 @@
         onclick="collapseImage('close-button')"></button>
 
       <!-- Canvas for inpainting -->
-      <canvas id="drawing-canvas" width="510" height="768" style="display: none; position: fixed; z-index: 200;"></canvas>
+      <canvas id="drawing-canvas" width="512" height="512" style="display: none; position: fixed; z-index: 200;"></canvas>
 
 
       <!-- Prompt instructions -->
@@ -568,12 +568,19 @@
                 more popular it will be hard to keep up with GPU demand and server cost,
                 so any support is greatly appreciated!
               </p>
-              <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
-                data-name="bmc-button" data-slug="pablocastr6" data-color="#5F7FFF" data-emoji="" data-font="Cookie"
-                data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff"
-                data-coffee-color="#FFDD00"></script>
+              <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+              <script>
+                kofiWidgetOverlay.draw('mobians', {
+                  'type': 'floating-chat',
+                  'floating-chat.donateButton.text': 'Support me',
+                  'floating-chat.donateButton.background-color': '#00b9fe',
+                  'floating-chat.donateButton.text-color': '#fff'
+                });
+              </script>
 
-                Join the discord for model updates, share images, and chat! Special thanks to "Mecha from the '80s" and "RinMaru" for helping gather training images!</p>
+              <p></p>Want to support the website as well as future model development? <a href="https://ko-fi.com/mobians">https://ko-fi.com/mobians</a>
+
+              <p></p>Join the discord for model updates, share images, and chat! Special thanks to "Mecha from the '80s" and "RinMaru" for helping gather training images!
 
               <iframe src="https://discord.com/widget?id=1095514548112461924&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
             </div>
@@ -926,6 +933,7 @@
       const selectElement = document.getElementById('floatingSelect');
       const selectedOption = selectElement.options[selectElement.selectedIndex].value;
       const imageGrid = document.querySelector('.image-grid');
+      const drawingCanvas = document.getElementById('drawing-canvas');
       let isMobileView = window.matchMedia('(max-width: 1200px)').matches;
 
       switch (selectedOption) {
@@ -936,8 +944,10 @@
             imageGrid.style.height = '66vw';
             imageGrid.style.aspectRatio = '2/1';
           } else {
-            imageGrid.style.width = '691px';
-            imageGrid.style.height = '460px';
+            imageGrid.style.width = '768px';
+            imageGrid.style.height = '512px';
+            drawingCanvas.style.width = '768px';
+            drawingCanvas.style.height = '512px';
           }
           break;
         case '2':
@@ -948,6 +958,8 @@
           } else {
             imageGrid.style.width = '512px';
             imageGrid.style.height = '512px';
+            drawingCanvas.style.width = '512px';
+            drawingCanvas.style.height = '512px';
           }
           break;
         case '3':
@@ -958,6 +970,8 @@
           } else {
             imageGrid.style.width = '512px';
             imageGrid.style.height = '768px';
+            drawingCanvas.style.width = '512px';
+            drawingCanvas.style.height = '768px';
           }
           break;
         default:
@@ -966,7 +980,9 @@
             imageGrid.style.height = '1536px';
           } else {
             imageGrid.style.width = '512px';
-            imageGrid.style.height = '768px';
+            imageGrid.style.height = '512px';
+            drawingCanvas.style.width = '512px';
+            drawingCanvas.style.height = '512px';
           }
       }
 
@@ -1058,7 +1074,7 @@
               "steps": 15,
               "negative_prompt": document.getElementById('negative-prompt-input').value,
               "width": imageWidth || 512,
-              "height": imageHeight || 768,
+              "height": imageHeight || 512,
               "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
               "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
               "batch_size": 4
@@ -1088,7 +1104,7 @@
               "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
               "batch_size": 4,
               "width": imageWidth || 512,
-              "height": imageHeight || 768,
+              "height": imageHeight || 512,
               "scheduler": 13,
               "strength": document.getElementById('custom-denoise').value || 0.7
             },
@@ -1115,7 +1131,7 @@
               "scheduler": 7,
               "negative_prompt": document.getElementById('negative-prompt-input').value,
               "width": imageWidth || 512,
-              "height": imageHeight || 768,
+              "height": imageHeight || 512,
               "steps": 20,
               "guidance_scale": Number(document.getElementById('customRange1').value) || 7,
               "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
