@@ -483,6 +483,7 @@
                   <div class="col col-md-4">
                     <ul>
                       <li>Amy Rose</li>
+                      <li>Barry the quokka</li>
                       <li>Big the cat</li>
                       <li>Blaze the cat</li>
                       <li>Bunnie Rabbot</li>
@@ -508,11 +509,13 @@
                       <li>Mighty the armadillo</li>
                       <li>Mina Mongoose</li>
                       <li>Mobian (Original characters in sonic style basically!)</li>
+                      <li>Neo Metal Sonic</li>
                       <li>Nicole the Lynx</li>
                       <li>Rouge the bat</li>
                       <li>Ray the flying squirrel</li>
                       <li>Rosy the rascal</li>
                       <li>Sally Acorn</li>
+                      <li>Scourge the hedgehog</li>
                       <li>Shadow the hedgehog</li>
                       <li>Silver the hedgehog</li>
                     </ul>
@@ -532,6 +535,8 @@
                       <li>Vector the crocodile</li>
                       <li>Wave the swallow</li>
                       <li>Whisper the wolf</li>
+                      <li>Zooey the fox</li>
+                      <li>Zeta the echidna</li>
                     </ul>
                   </div>
                 </div>
@@ -1039,22 +1044,22 @@
         case '1':
           imageWidth = 768; // Landscape
           imageHeight = 512;
-          model = "sonicDiffusionV3_epsilon_cleaned-ep102"
+          model = "testSonicBeta4__dynamic"
           break;
         case '2':
           imageWidth = 512;
           imageHeight = 512; // Square
-          model = "sonicDiffusionV3_epsilon_cleaned-ep102__512x512x4"
+          model = "testSonicBeta4__dynamic"
           break;
         case '3':
           imageWidth = 512; // Portrait
           imageHeight = 768;
-          model = "sonicDiffusionV3_epsilon_cleaned-ep102__512x768x4"
+          model = "testSonicBeta4__dynamic"
           break;
         default:
           imageWidth = 512;
           imageHeight = 512;
-          model = "sonicDiffusionV3_epsilon_cleaned-ep102__512x512x4"
+          model = "testSonicBeta4__dynamic"
       }
 
       let payload;
@@ -1108,7 +1113,7 @@
               "scheduler": 13,
               "strength": document.getElementById('custom-denoise').value || 0.7
             },
-            "model": model,
+            "model": "testSonicBeta4",
             "save_image": false,
           }
 
@@ -1138,7 +1143,7 @@
               "batch_size": 4,
               "strength": 1
             },
-            "model": "sonicDiffusionV3Beta3-inpainting.inpainting.safetensors",
+            "model": "testSonicDiffusionBeta4-inpainting.inpainting.ckpt",
           }
 
           // Call Volta API

@@ -3,6 +3,7 @@ import json
 import io
 import base64
 import requests
+import random
 
 from django.contrib.staticfiles import finders
 from django.http import JsonResponse, HttpResponse
@@ -13,7 +14,7 @@ from PIL import Image, ImageDraw, ImageFont
 from dotenv import load_dotenv
 load_dotenv()
 
-API_IP = os.environ.get('API_IP')
+API_IP_List = os.environ.get('API_IP_List').split(',')
 
 # Create your views here.
 def index(resquest):
@@ -33,7 +34,7 @@ def add_watermark(image, watermark_text, opacity):
     watermark = Image.new('RGBA', image.size, (255, 255, 255, 0))
     draw = ImageDraw.Draw(watermark)
     font_file_path = finders.find('fonts/Roboto-Medium.ttf')
-    font = ImageFont.truetype(font_file_path, 20)
+    font = ImageFont.truetype(font_file_path, 24)
     draw.text((10, 10), watermark_text, font=font, fill=(255, 255, 255, opacity))
 
     # Overlay watermark on the original image
@@ -43,6 +44,8 @@ def add_watermark(image, watermark_text, opacity):
 @csrf_exempt
 def txt2img(request):
     data = json.loads(request.body)
+
+    API_IP = chooseAPI('txt2img')
 
     response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
     r = response.json()
@@ -87,6 +90,8 @@ def img2img(request):
         encoded_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
         data['data']['image'] = encoded_image
 
+    API_IP = chooseAPI('img2img')
+
     response = requests.post(url=f'{API_IP}api/generate/img2img', json=data)
     r = response.json()
 
@@ -129,6 +134,8 @@ def inpainting(request):
         encoded_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
         data['data']['image'] = encoded_image
 
+    API_IP = chooseAPI('inpainting')
+
     response = requests.post(url=f'{API_IP}api/generate/inpainting', json=data)
     r = response.json()
 
@@ -145,3 +152,34 @@ def inpainting(request):
             img_io.getvalue()).decode('utf-8'))
 
     return JsonResponse({'images': base64_images})
+
+
+def chooseAPI(generateType):
+    current_apis = API_IP_List.copy()
+
+    if (generateType == 'img2img' or generateType == 'inpainting'):
+        API_IP = API_IP_List[0]
+
+    else:
+        while current_apis:
+            API_IP = random.choice(current_apis)
+            if isAPIAlive(API_IP):
+                break
+            else:
+                current_apis.remove(API_IP)
+
+        if not current_apis:
+            API_IP = None  # or raise an exception, or some error handling
+
+    return API_IP
+
+
+def isAPIAlive(API_IP):
+    try:
+        response = requests.get(url=f'{API_IP}api/test/alive')
+        if response.status_code == 200:
+            return True
+        else:
+            return False
+    except:
+        return False
