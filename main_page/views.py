@@ -45,7 +45,7 @@ def add_watermark(image, watermark_text, opacity):
 def txt2img(request):
     data = json.loads(request.body)
 
-    data['data']['prompt'] = promptFilter(data['data']['prompt'])
+    data['data']['prompt'], data['data']['negative_prompt'] = promptFilter(data)
     data['data']['negative_prompt'] = fortify_default_negative(data['data']['negative_prompt'])
 
     API_IP = chooseAPI('txt2img')
@@ -54,9 +54,14 @@ def txt2img(request):
     try:
         r = response.json()
     except:
-        API_IP = chooseAPI('txt2img')
-        response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
-        r = response.json()
+        try:
+            API_IP = chooseAPI('txt2img')
+            response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+            r = response.json()
+        except:
+            API_IP = chooseAPI('txt2img')
+            response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+            r = response.json()
 
     # Process the data here
     base64_images = []
@@ -72,7 +77,7 @@ def txt2img(request):
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
-        image_with_watermark.save(img_io, "PNG")
+        image_with_watermark.save(img_io, "WEBP", quality=100)
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
@@ -83,7 +88,7 @@ def txt2img(request):
 def img2img(request):
     data = json.loads(request.body)
 
-    data['data']['prompt'] = promptFilter(data['data']['prompt'])
+    data['data']['prompt'], data['data']['negative_prompt'] = promptFilter(data)
     data['data']['negative_prompt'] = fortify_default_negative(data['data']['negative_prompt'])
 
     # Convert base64 string to image to remove alpha channel if needed
@@ -107,9 +112,14 @@ def img2img(request):
     try:
         r = response.json()
     except:
-        API_IP = chooseAPI('img2img')
-        response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
-        r = response.json()
+        try:
+            API_IP = chooseAPI('img2img')
+            response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+            r = response.json()
+        except:
+            API_IP = chooseAPI('img2img')
+            response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+            r = response.json()
 
     watermark_text = "Mobians.ai"
     opacity = 128  # Semi-transparent (0-255)
@@ -124,7 +134,7 @@ def img2img(request):
         image_with_watermark = add_watermark(image, watermark_text, opacity)
 
         # Change to PNG to preserve png info
-        image_with_watermark.save(img_io, "PNG")
+        image_with_watermark.save(img_io, "WEBP", quality=100)
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
@@ -135,7 +145,7 @@ def img2img(request):
 def inpainting(request):
     data = json.loads(request.body)
 
-    data['data']['prompt'] = promptFilter(data['data']['prompt'])
+    data['data']['prompt'], data['data']['negative_prompt'] = promptFilter(data)
     data['data']['negative_prompt'] = fortify_default_negative(data['data']['negative_prompt'])
 
     # Convert base64 string to image to remove alpha channel if needed
@@ -159,9 +169,14 @@ def inpainting(request):
     try:
         r = response.json()
     except:
-        API_IP = chooseAPI('inpainting')
-        response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
-        r = response.json()
+        try:
+            API_IP = chooseAPI('inpainting')
+            response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+            r = response.json()
+        except:
+            API_IP = chooseAPI('inpainting')
+            response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+            r = response.json()
 
     # Process the data here
     base64_images = []
@@ -170,7 +185,7 @@ def inpainting(request):
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
-        image.save(img_io, "PNG")
+        image_with_watermark.save(img_io, "WEBP", quality=100)
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
@@ -208,7 +223,10 @@ def isAPIAlive(API_IP):
     except:
         return False
 
-def promptFilter(prompt):
+def promptFilter(data):
+    prompt = data['data']['prompt']
+    negative_prompt = data['data']['negative_prompt']
+
     character_list = ['cream the rabbit', 
                       'rosy the rascal',
                       'sage',
@@ -216,7 +234,7 @@ def promptFilter(prompt):
                       'marine the raccoon',
                       'sage']
     
-    censored_tags = ['breasts',
+    censored_tags = ['breast',
                      'nipples',
                      'pussy',
                      'nsfw',
@@ -228,17 +246,20 @@ def promptFilter(prompt):
                      'rape',
                      'sex',
                      'boob',
-                     'sexy']
+                     'sexy',
+                     'busty',
+                     'tits']
 
     # If character is in prompt, filter out censored tags from prompt
     if any(character in prompt.lower() for character in character_list):
         for tag in censored_tags:
             prompt = prompt.replace(tag, '')
+        negative_prompt = "nipples, pussy, breasts, " + negative_prompt
             
-    return prompt
+    return prompt, negative_prompt
 
 def fortify_default_negative(negative_prompt):
-    if negative_prompt == "nsfw, worst quality, low quality, watermark, signature, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, speech bubble, extra legs, extra limbs, bad proportions, poorly drawn hands, text, flat background":
+    if "nsfw" in negative_prompt.lower() and "nipples" not in negative_prompt.lower():
         return "nipples, pussy, breasts, " + negative_prompt
     else:
         return negative_prompt

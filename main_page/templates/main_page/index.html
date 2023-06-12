@@ -413,7 +413,7 @@
                   ?
                 </span>
               </label>
-              <textarea class="form-control" id="negative-prompt-input" rows="3">nsfw, worst quality, low quality, watermark, signature, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, speech bubble, extra legs, extra limbs, bad proportions, poorly drawn hands, text, flat background</textarea>
+              <textarea class="form-control" id="negative-prompt-input" rows="3">3d, nsfw, worst quality, low quality, watermark, signature, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, speech bubble, extra legs, extra limbs, bad proportions, poorly drawn hands, text, flat background</textarea>
             </div>
 
 
@@ -1209,19 +1209,19 @@
         document.getElementById("enable-inpainting").style.display = 'none';
 
         // Set the src attribute of the image elements to the base64-encoded images
-        document.getElementById('img-top-left').src = 'data:image/png;base64,' + base64Images[0];
-        document.getElementById('img-top-right').src = 'data:image/png;base64,' + base64Images[1];
-        document.getElementById('img-bottom-left').src = 'data:image/png;base64,' + base64Images[2];
-        document.getElementById('img-bottom-right').src = 'data:image/png;base64,' + base64Images[3];
+        document.getElementById('img-top-left').src = 'data:image/webp;base64,' + base64Images[0];
+        document.getElementById('img-top-right').src = 'data:image/webp;base64,' + base64Images[1];
+        document.getElementById('img-bottom-left').src = 'data:image/webp;base64,' + base64Images[2];
+        document.getElementById('img-bottom-right').src = 'data:image/webp;base64,' + base64Images[3];
 
         // Cache the top left image to be used when collapsing image
-        topLeftImageCache.src = 'data:image/png;base64,' + base64Images[0];
+        topLeftImageCache.src = 'data:image/webp;base64,' + base64Images[0];
 
         // Set the title attribute of the img tags based on the prompt info
-        document.getElementById('img-top-left').title = `${document.getElementById('prompt-input').value}.png`;
-        document.getElementById('img-top-right').title = `${document.getElementById('prompt-input').value}.png`;
-        document.getElementById('img-bottom-left').title = `${document.getElementById('prompt-input').value}.png`;
-        document.getElementById('img-bottom-right').title = `${document.getElementById('prompt-input').value}.png`;
+        document.getElementById('img-top-left').title = `${document.getElementById('prompt-input').value}.webp`;
+        document.getElementById('img-top-right').title = `${document.getElementById('prompt-input').value}.webp`;
+        document.getElementById('img-bottom-left').title = `${document.getElementById('prompt-input').value}.webp`;
+        document.getElementById('img-bottom-right').title = `${document.getElementById('prompt-input').value}.webp`;
 
         // Unhide the images and enable generate button
         collapseImage("img-top-left", "close-button")
