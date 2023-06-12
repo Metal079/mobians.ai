@@ -45,10 +45,17 @@ def add_watermark(image, watermark_text, opacity):
 def txt2img(request):
     data = json.loads(request.body)
 
+    data['data']['prompt'] = promptFilter(data['data']['prompt'])
+    data['data']['negative_prompt'] = fortify_default_negative(data['data']['negative_prompt'])
+
     API_IP = chooseAPI('txt2img')
 
     response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
-    r = response.json()
+    try:
+        r = response.json()
+    except:
+        response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+        r = response.json()
 
     # Process the data here
     base64_images = []
@@ -75,6 +82,9 @@ def txt2img(request):
 def img2img(request):
     data = json.loads(request.body)
 
+    data['data']['prompt'] = promptFilter(data['data']['prompt'])
+    data['data']['negative_prompt'] = fortify_default_negative(data['data']['negative_prompt'])
+
     # Convert base64 string to image to remove alpha channel if needed
     received_image = Image.open(io.BytesIO(base64.b64decode(data['data']['image'].split(",", 1)[0])))
     if received_image.mode == 'RGBA':
@@ -93,7 +103,11 @@ def img2img(request):
     API_IP = chooseAPI('img2img')
 
     response = requests.post(url=f'{API_IP}api/generate/img2img', json=data)
-    r = response.json()
+    try:
+        r = response.json()
+    except:
+        response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+        r = response.json()
 
     watermark_text = "Mobians.ai"
     opacity = 128  # Semi-transparent (0-255)
@@ -119,6 +133,9 @@ def img2img(request):
 def inpainting(request):
     data = json.loads(request.body)
 
+    data['data']['prompt'] = promptFilter(data['data']['prompt'])
+    data['data']['negative_prompt'] = fortify_default_negative(data['data']['negative_prompt'])
+
     # Convert base64 string to image to remove alpha channel if needed
     received_image = Image.open(io.BytesIO(base64.b64decode(data['data']['image'].split(",", 1)[0])))
     if received_image.mode == 'RGBA':
@@ -137,7 +154,11 @@ def inpainting(request):
     API_IP = chooseAPI('inpainting')
 
     response = requests.post(url=f'{API_IP}api/generate/inpainting', json=data)
-    r = response.json()
+    try:
+        r = response.json()
+    except:
+        response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+        r = response.json()
 
     # Process the data here
     base64_images = []
@@ -183,3 +204,36 @@ def isAPIAlive(API_IP):
             return False
     except:
         return False
+
+def promptFilter(prompt):
+    character_list = ['cream the rabbit', 
+                      'rosy the rascal',
+                      'sage',
+                      'maria robotnik',
+                      'marine the raccoon']
+    
+    censored_tags = ['breasts',
+                     'nipples',
+                     'pussy',
+                     'nsfw',
+                     'nudity',
+                     'naked',
+                     'loli',
+                     'nude',
+                     'ass',
+                     'rape',
+                     'sex',
+                     'boob']
+
+    # If character is in prompt, filter out censored tags from prompt
+    if any(character in prompt.lower() for character in character_list):
+        for tag in censored_tags:
+            prompt = prompt.replace(tag, '')
+            
+    return prompt
+
+def fortify_default_negative(negative_prompt):
+    if negative_prompt == "nsfw, worst quality, low quality, watermark, signature, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, speech bubble, extra legs, extra limbs, bad proportions, poorly drawn hands, text, flat background":
+        return "nipples, pussy, breasts, " + negative_prompt
+    else:
+        return negative_prompt
