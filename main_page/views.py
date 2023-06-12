@@ -54,6 +54,7 @@ def txt2img(request):
     try:
         r = response.json()
     except:
+        API_IP = chooseAPI('txt2img')
         response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
         r = response.json()
 
@@ -106,6 +107,7 @@ def img2img(request):
     try:
         r = response.json()
     except:
+        API_IP = chooseAPI('img2img')
         response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
         r = response.json()
 
@@ -157,6 +159,7 @@ def inpainting(request):
     try:
         r = response.json()
     except:
+        API_IP = chooseAPI('inpainting')
         response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
         r = response.json()
 
