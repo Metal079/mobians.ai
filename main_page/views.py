@@ -213,7 +213,8 @@ def promptFilter(prompt):
                       'rosy the rascal',
                       'sage',
                       'maria robotnik',
-                      'marine the raccoon']
+                      'marine the raccoon',
+                      'sage']
     
     censored_tags = ['breasts',
                      'nipples',
@@ -226,7 +227,8 @@ def promptFilter(prompt):
                      'ass',
                      'rape',
                      'sex',
-                     'boob']
+                     'boob',
+                     'sexy']
 
     # If character is in prompt, filter out censored tags from prompt
     if any(character in prompt.lower() for character in character_list):
