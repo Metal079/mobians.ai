@@ -185,7 +185,7 @@ def inpainting(request):
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
-        image_with_watermark.save(img_io, "WEBP", quality=100)
+        image.save(img_io, "WEBP", quality=100)
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
