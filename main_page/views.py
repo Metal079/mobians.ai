@@ -34,7 +34,7 @@ def add_watermark(image, watermark_text, opacity):
     watermark = Image.new('RGBA', image.size, (255, 255, 255, 0))
     draw = ImageDraw.Draw(watermark)
     font_file_path = finders.find('fonts/Roboto-Medium.ttf')
-    font = ImageFont.truetype(font_file_path, 24)
+    font = ImageFont.truetype(font_file_path, 25)
     draw.text((10, 10), watermark_text, font=font, fill=(255, 255, 255, opacity))
 
     # Overlay watermark on the original image
@@ -77,7 +77,7 @@ def txt2img(request):
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
-        image_with_watermark.save(img_io, "WEBP", quality=100)
+        image_with_watermark.save(img_io, "PNG")
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
@@ -134,7 +134,7 @@ def img2img(request):
         image_with_watermark = add_watermark(image, watermark_text, opacity)
 
         # Change to PNG to preserve png info
-        image_with_watermark.save(img_io, "WEBP", quality=100)
+        image_with_watermark.save(img_io, "PNG")
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
@@ -185,7 +185,7 @@ def inpainting(request):
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
-        image.save(img_io, "WEBP", quality=100)
+        image.save(img_io, "PNG")
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
@@ -248,7 +248,9 @@ def promptFilter(data):
                      'boob',
                      'sexy',
                      'busty',
-                     'tits']
+                     'tits',
+                     'thighs',
+                     'thick']
 
     # If character is in prompt, filter out censored tags from prompt
     if any(character in prompt.lower() for character in character_list):
