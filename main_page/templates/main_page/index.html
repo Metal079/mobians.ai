@@ -1110,22 +1110,22 @@
         case '1':
           imageWidth = 768; // Landscape
           imageHeight = 512;
-          model = "testSonicBeta4__dynamic"
+          model = "testSonicBeta4.ckpt"
           break;
         case '2':
           imageWidth = 512;
           imageHeight = 512; // Square
-          model = "testSonicBeta4__dynamic"
+          model = "testSonicBeta4.ckpt"
           break;
         case '3':
           imageWidth = 512; // Portrait
           imageHeight = 768;
-          model = "testSonicBeta4__dynamic"
+          model = "testSonicBeta4.ckpt"
           break;
         default:
           imageWidth = 512;
           imageHeight = 512;
-          model = "testSonicBeta4__dynamic"
+          model = "testSonicBeta4.ckpt"
       }
 
       let payload;
@@ -1150,7 +1150,7 @@
               "seed": Number(document.getElementById('seedInput').value) || Math.floor(Math.random() * 999999),
               "batch_size": 4
             },
-            "model": model,
+            "model": 'testSonicBeta4.ckpt',
             "save_image": false
           }
 
@@ -1179,7 +1179,7 @@
               "scheduler": 13,
               "strength": document.getElementById('custom-denoise').value || 0.7
             },
-            "model": "testSonicBeta4",
+            "model": "testSonicBeta4.ckpt",
             "save_image": false,
           }
 
