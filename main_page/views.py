@@ -51,17 +51,7 @@ def txt2img(request):
     API_IP = chooseAPI('txt2img')
 
     response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
-    try:
-        r = response.json()
-    except:
-        try:
-            API_IP = chooseAPI('txt2img')
-            response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
-            r = response.json()
-        except:
-            API_IP = chooseAPI('txt2img')
-            response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
-            r = response.json()
+    r = response.json()
 
     # Process the data here
     base64_images = []
@@ -109,17 +99,7 @@ def img2img(request):
     API_IP = chooseAPI('img2img')
 
     response = requests.post(url=f'{API_IP}api/generate/img2img', json=data)
-    try:
-        r = response.json()
-    except:
-        try:
-            API_IP = chooseAPI('img2img')
-            response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
-            r = response.json()
-        except:
-            API_IP = chooseAPI('img2img')
-            response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
-            r = response.json()
+    r = response.json()
 
     watermark_text = "Mobians.ai"
     opacity = 128  # Semi-transparent (0-255)
@@ -166,17 +146,7 @@ def inpainting(request):
     API_IP = chooseAPI('inpainting')
 
     response = requests.post(url=f'{API_IP}api/generate/inpainting', json=data)
-    try:
-        r = response.json()
-    except:
-        try:
-            API_IP = chooseAPI('inpainting')
-            response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
-            r = response.json()
-        except:
-            API_IP = chooseAPI('inpainting')
-            response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
-            r = response.json()
+    r = response.json()
 
     # Process the data here
     base64_images = []
