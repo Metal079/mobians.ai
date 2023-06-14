@@ -51,7 +51,14 @@ def txt2img(request):
     API_IP = chooseAPI('txt2img')
 
     response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
-    r = response.json()
+
+    # Try using the requested API, if it fails, use the other one
+    try:
+        r = response.json()
+    except:
+        API_IP = chooseAPI('txt2img')
+        response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+        r = response.json()
 
     # Process the data here
     base64_images = []
@@ -67,7 +74,7 @@ def txt2img(request):
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
-        image_with_watermark.save(img_io, "PNG")
+        image_with_watermark.save(img_io, "WEBP", quality=95)
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
@@ -99,7 +106,12 @@ def img2img(request):
     API_IP = chooseAPI('img2img')
 
     response = requests.post(url=f'{API_IP}api/generate/img2img', json=data)
-    r = response.json()
+    try:
+        r = response.json()
+    except:
+        API_IP = chooseAPI('img2img')
+        response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+        r = response.json()
 
     watermark_text = "Mobians.ai"
     opacity = 128  # Semi-transparent (0-255)
@@ -114,7 +126,7 @@ def img2img(request):
         image_with_watermark = add_watermark(image, watermark_text, opacity)
 
         # Change to PNG to preserve png info
-        image_with_watermark.save(img_io, "PNG")
+        image_with_watermark.save(img_io, "WEBP", quality=95)
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
@@ -146,7 +158,12 @@ def inpainting(request):
     API_IP = chooseAPI('inpainting')
 
     response = requests.post(url=f'{API_IP}api/generate/inpainting', json=data)
-    r = response.json()
+    try:
+        r = response.json()
+    except:
+        API_IP = chooseAPI('inpainting')
+        response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+        r = response.json()
 
     # Process the data here
     base64_images = []
@@ -155,7 +172,7 @@ def inpainting(request):
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
-        image.save(img_io, "PNG")
+        image.save(img_io, "WEBP", quality=95)
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
@@ -166,19 +183,11 @@ def inpainting(request):
 def chooseAPI(generateType):
     current_apis = API_IP_List.copy()
 
-    if (generateType == 'img2img' or generateType == 'inpainting'):
+    if (generateType == 'inpainting'):
         API_IP = API_IP_List[0]
 
     else:
-        while current_apis:
-            API_IP = random.choice(current_apis)
-            if isAPIAlive(API_IP):
-                break
-            else:
-                current_apis.remove(API_IP)
-
-        if not current_apis:
-            API_IP = None  # or raise an exception, or some error handling
+        API_IP = random.choice(current_apis)
 
     return API_IP
 
