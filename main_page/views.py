@@ -83,7 +83,7 @@ def txt2img(request):
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
-        image_with_watermark.save(img_io, "WEBP", quality=95)
+        image_with_watermark.save(img_io, "PNG")
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
@@ -112,7 +112,7 @@ def img2img(request):
         encoded_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
         data['data']['image'] = encoded_image
 
-    API_IP = chooseAPI('img2img')
+    image_with_watermark.save(img_io, "PNG")
 
     response = requests.post(url=f'{API_IP}api/generate/img2img', json=data)
     try:
@@ -181,7 +181,7 @@ def inpainting(request):
         img_io = io.BytesIO()
 
         # Change to PNG to preserve png info
-        image.save(img_io, "WEBP", quality=95)
+        image.save(img_io, "PNG")
         img_io.seek(0)
         base64_images.append(base64.b64encode(
             img_io.getvalue()).decode('utf-8'))
