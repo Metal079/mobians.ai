@@ -4,6 +4,7 @@ import io
 import base64
 import requests
 import random
+import time
 
 from django.contrib.staticfiles import finders
 from django.http import JsonResponse, HttpResponse
@@ -50,15 +51,23 @@ def txt2img(request):
 
     API_IP = chooseAPI('txt2img')
 
-    response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
-
     # Try using the requested API, if it fails, use the other one
-    try:
-        r = response.json()
-    except:
-        API_IP = chooseAPI('txt2img')
+    response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+    attempts = 0
+    while response.status_code != 200 and attempts < 3:
+        if response.status_code == 404:
+            API_IP = chooseAPI('txt2img', [API_IP])
+            print("got 404")
+        elif response.status_code == 503:
+            time.sleep(3)
+            print("got 503")
+        else:
+            print(f"got other error: {response.status_code}")
+            break
+        attempts += 1
         response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
-        r = response.json()
+
+    r = response.json()
 
     # Process the data here
     base64_images = []
@@ -109,8 +118,8 @@ def img2img(request):
     try:
         r = response.json()
     except:
-        API_IP = chooseAPI('img2img')
-        response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+        API_IP = chooseAPI('img2img', [API_IP])
+        response = requests.post(url=f'{API_IP}api/generate/img2img', json=data)
         r = response.json()
 
     watermark_text = "Mobians.ai"
@@ -161,8 +170,8 @@ def inpainting(request):
     try:
         r = response.json()
     except:
-        API_IP = chooseAPI('inpainting')
-        response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+        API_IP = chooseAPI('inpainting', [API_IP])
+        response = requests.post(url=f'{API_IP}api/generate/inpainting', json=data)
         r = response.json()
 
     # Process the data here
@@ -180,13 +189,16 @@ def inpainting(request):
     return JsonResponse({'images': base64_images})
 
 
-def chooseAPI(generateType):
+def chooseAPI(generateType, triedAPIs = []):
     current_apis = API_IP_List.copy()
 
     if (generateType == 'inpainting'):
         API_IP = API_IP_List[0]
 
     else:
+        if len(triedAPIs) > 0:
+            for i in triedAPIs:
+                current_apis.remove(i)
         API_IP = random.choice(current_apis)
 
     return API_IP
@@ -244,3 +256,4 @@ def fortify_default_negative(negative_prompt):
         return "nipples, pussy, breasts, " + negative_prompt
     else:
         return negative_prompt
+    
