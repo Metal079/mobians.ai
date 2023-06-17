@@ -49,7 +49,7 @@ def txt2img(request):
     data['data']['prompt'], data['data']['negative_prompt'] = promptFilter(data)
     data['data']['negative_prompt'] = fortify_default_negative(data['data']['negative_prompt'])
 
-    API_IP = chooseAPI('txt2img')
+    API_IP = 'http://76.157.184.213:5003/'
 
     # Try using the requested API, if it fails, use the other one
     response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
@@ -113,12 +113,12 @@ def img2img(request):
         data['data']['image'] = encoded_image
 
     API_IP = chooseAPI('img2img')
-    response = requests.post(url=f'{API_IP}api/generate/img2img', json=data)
+    response = requests.post(url=f'{API_IP}api/generate/img2img', json=data, verify=False)
     try:
         r = response.json()
     except:
         API_IP = chooseAPI('img2img', [API_IP])
-        response = requests.post(url=f'{API_IP}api/generate/img2img', json=data)
+        response = requests.post(url=f'{API_IP}api/generate/img2img', json=data, verify=False)
         r = response.json()
 
     watermark_text = "Mobians.ai"
