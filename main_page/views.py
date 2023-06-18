@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw, ImageFont
 from dotenv import load_dotenv
 load_dotenv()
 
-API_IP_List = os.environ.get('API_IP_List').split(',')
+API_IP_List = os.environ.get('API_IP_List').split(' ')
 
 # Create your views here.
 def index(resquest):
@@ -49,13 +49,13 @@ def txt2img(request):
     data['data']['prompt'], data['data']['negative_prompt'] = promptFilter(data)
     data['data']['negative_prompt'] = fortify_default_negative(data['data']['negative_prompt'])
 
-    API_IP = 'http://76.157.184.213:5003/'
+    API_IP = chooseAPI('txt2img')
 
     # Try using the requested API, if it fails, use the other one
-    response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+    response = requests.post(url=f'{API_IP}/txt2img', json=data)
     attempts = 0
     while response.status_code != 200 and attempts < 3:
-        if response.status_code == 404:
+        if response.status_code == 404 or response.status_code == 405:
             API_IP = chooseAPI('txt2img', [API_IP])
             print("got 404")
         elif response.status_code == 503:
@@ -65,30 +65,9 @@ def txt2img(request):
             print(f"got other error: {response.status_code}")
             break
         attempts += 1
-        response = requests.post(url=f'{API_IP}api/generate/txt2img', json=data)
+        response = requests.post(url=f'{API_IP}/txt2img', json=data)
 
-    r = response.json()
-
-    # Process the data here
-    base64_images = []
-    watermark_text = "Mobians.ai"
-    opacity = 128  # Semi-transparent (0-255)
-
-    for i in r['images'][1:]:
-        image = Image.open(io.BytesIO(base64.b64decode(i.split(",", 1)[1])))
-
-        # Add watermark
-        image_with_watermark = add_watermark(image, watermark_text, opacity)
-
-        img_io = io.BytesIO()
-
-        # Change to PNG to preserve png info
-        image_with_watermark.save(img_io, "PNG")
-        img_io.seek(0)
-        base64_images.append(base64.b64encode(
-            img_io.getvalue()).decode('utf-8'))
-
-    return JsonResponse({'images': base64_images})
+    return JsonResponse(response.json())
 
 @csrf_exempt
 def img2img(request):
@@ -112,34 +91,25 @@ def img2img(request):
         encoded_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
         data['data']['image'] = encoded_image
 
-    API_IP = chooseAPI('img2img')
-    response = requests.post(url=f'{API_IP}api/generate/img2img', json=data, verify=False)
-    try:
-        r = response.json()
-    except:
-        API_IP = chooseAPI('img2img', [API_IP])
-        response = requests.post(url=f'{API_IP}api/generate/img2img', json=data, verify=False)
-        r = response.json()
+    API_IP = chooseAPI('txt2img')
 
-    watermark_text = "Mobians.ai"
-    opacity = 128  # Semi-transparent (0-255)
+    # Try using the requested API, if it fails, use the other one
+    response = requests.post(url=f'{API_IP}/img2img', json=data)
+    attempts = 0
+    while response.status_code != 200 and attempts < 3:
+        if response.status_code == 404 or response.status_code == 405:
+            API_IP = chooseAPI('txt2img', [API_IP])
+            print("got 404")
+        elif response.status_code == 503:
+            time.sleep(3)
+            print("got 503")
+        else:
+            print(f"got other error: {response.status_code}")
+            break
+        attempts += 1
+        response = requests.post(url=f'{API_IP}/img2img', json=data)
 
-    # Process the data here
-    base64_images = []
-    for i in r['images'][1:]:
-        image = Image.open(io.BytesIO(base64.b64decode(i.split(",", 1)[1])))
-        img_io = io.BytesIO()
-
-        # Add watermark
-        image_with_watermark = add_watermark(image, watermark_text, opacity)
-
-        # Change to PNG to preserve png info
-        image_with_watermark.save(img_io, "PNG")
-        img_io.seek(0)
-        base64_images.append(base64.b64encode(
-            img_io.getvalue()).decode('utf-8'))
-
-    return JsonResponse({'images': base64_images})
+    return JsonResponse(response.json())
 
 @csrf_exempt
 def inpainting(request):
