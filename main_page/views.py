@@ -52,7 +52,12 @@ def generate_image(request):
     API_IP = chooseAPI('txt2img')
 
     # Try using the requested API, if it fails, use the other one
-    response = requests.post(url=f'{API_IP}/generate_image/', json=data)
+    try:
+        response = requests.post(url=f'{API_IP}/generate_image/', json=data)
+    except:
+        API_IP = chooseAPI('txt2img', [API_IP])
+        response = requests.post(url=f'{API_IP}/generate_image/', json=data)
+        
     attempts = 0
     while response.status_code != 200 and attempts < 3:
         API_IP = chooseAPI('txt2img', [API_IP])
