@@ -57,10 +57,10 @@ def generate_image(request):
     while response.status_code != 200 and attempts < 3:
         if response.status_code == 404 or response.status_code == 405:
             API_IP = chooseAPI('txt2img', [API_IP])
-            print("got 404")
-        elif response.status_code == 503:
+            print("got 404 or 405")
+        elif response.status_code == 503 or response.status_code == 500 or response.status_code == 502:
             time.sleep(3)
-            print("got 503")
+            print("got 5XX error")
         else:
             print(f"got other error: {response.status_code}")
             break

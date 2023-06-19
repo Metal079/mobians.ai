@@ -1190,8 +1190,17 @@
             },
             body: JSON.stringify(payload)
           });
+
+          // Check if the response status code is not 200
+          if(response.status !== 200) {
+            console.error(`Error: ${response.status}`); // Log the error
+            const errorModal = new bootstrap.Modal(document.getElementById("error-modal")); // Get the modal
+            errorModal.show(); // Show the modal
+            return; // Exit from the function
+          }
+          
           job = await response.json();
-          console.log("Job ID is " + job);
+          console.log("Job ID is " + job.job_id);
           jobId = job.job_id;
 
           // Periodically check the job status
@@ -1199,7 +1208,11 @@
           while (jobStatus.status !== "completed") {
             await new Promise(resolve => setTimeout(resolve, 5000)); // wait for 5 seconds
             jobStatus = await getJobStatus(job);
+
+            // Update the queue position in the HTML
+            document.getElementById('queue-position').innerHTML = "Queue Position: " + jobStatus.queue_position;
           }
+
           break;
 
         case 'img2img':
@@ -1231,8 +1244,17 @@
             },
             body: JSON.stringify(payload)
           });
+
+          // Check if the response status code is not 200
+          if(response.status !== 200) {
+            console.error(`Error: ${response.status}`); // Log the error
+            const errorModal = new bootstrap.Modal(document.getElementById("error-modal")); // Get the modal
+            errorModal.show(); // Show the modal
+            return; // Exit from the function
+          }
+
           job = await response.json();
-          console.log("Job ID is " + job);
+          console.log("Job ID is " + job.job_id);
           jobId = job.job_id;
 
           // Periodically check the job status
@@ -1240,7 +1262,11 @@
           while (jobStatus.status !== "completed") {
             await new Promise(resolve => setTimeout(resolve, 5000)); // wait for 5 seconds
             jobStatus = await getJobStatus(job);
+
+            // Update the queue position in the HTML
+            document.getElementById('queue-position').innerHTML = "Queue Position: " + jobStatus.queue_position;
           }
+
           break;
 
         case 'inpainting':
