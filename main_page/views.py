@@ -55,6 +55,7 @@ def generate_image(request):
     response = requests.post(url=f'{API_IP}/generate_image/', json=data)
     attempts = 0
     while response.status_code != 200 and attempts < 3:
+        API_IP = chooseAPI('txt2img', [API_IP])
         print(f"got error: {response.status_code}")
         attempts += 1
         response = requests.post(url=f'{API_IP}/generate_image/', json=data)
