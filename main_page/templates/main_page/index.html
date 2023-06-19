@@ -1136,6 +1136,32 @@
         drawingBase64 = getDrawingBase64();
       }
 
+      // Define a function to get job status
+      async function getJobStatus(job) {
+        const response = await fetch(`retrieve_job/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(job)
+        });
+        return await response.json();
+      }
+
+      // Define a function to get job result
+      async function getJobResult(jobId) {
+        const response = await fetch(`retrieve_job/`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        return await response.json();
+      }
+
+      let jobStatus;
+      let job;
+      let jobId;
       switch (mode) {
         case 'txt2img':
           payload = {
@@ -1151,17 +1177,29 @@
               "batch_size": 4
             },
             "model": 'testSonicBeta4.ckpt',
-            "save_image": false
+            "save_image": false,
+            "job_type": "txt2img"
           }
 
           // Call Volta API
-          response = await fetch('txt2img/', {
+          // Submit the job and get the job ID
+          response = await fetch('generate_image/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify(payload)
           });
+          job = await response.json();
+          console.log("Job ID is " + job);
+          jobId = job.job_id;
+
+          // Periodically check the job status
+          jobStatus = await getJobStatus(job);
+          while (jobStatus.status !== "completed") {
+            await new Promise(resolve => setTimeout(resolve, 5000)); // wait for 5 seconds
+            jobStatus = await getJobStatus(job);
+          }
           break;
 
         case 'img2img':
@@ -1181,16 +1219,28 @@
             },
             "model": "testSonicBeta4.ckpt",
             "save_image": false,
+            "job_type": "img2img"
           }
 
           // Call Volta API
-          response = await fetch('img2img/', {
+          // Submit the job and get the job ID
+          response = await fetch('generate_image/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify(payload)
           });
+          job = await response.json();
+          console.log("Job ID is " + job);
+          jobId = job.job_id;
+
+          // Periodically check the job status
+          jobStatus = await getJobStatus(job);
+          while (jobStatus.status !== "completed") {
+            await new Promise(resolve => setTimeout(resolve, 5000)); // wait for 5 seconds
+            jobStatus = await getJobStatus(job);
+          }
           break;
 
         case 'inpainting':
@@ -1224,9 +1274,10 @@
       }
 
       // Handle the API response
-      if (response.ok) {
-        const data = await response.json(); // Parse the JSON response
-        const base64Images = data.images;
+      if (jobStatus.status === "completed") {
+        //const jobResult = await getJobResult(jobId);
+        const base64Images = jobStatus.result;
+        //const data = await response.json(); // Parse the JSON response
         const closeButton = document.getElementById("close-button");
 
         // When the image is retrieved, hide the loading bar and queue

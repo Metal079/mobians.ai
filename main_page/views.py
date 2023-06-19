@@ -43,7 +43,7 @@ def add_watermark(image, watermark_text, opacity):
     return image_with_watermark
 
 @csrf_exempt
-def txt2img(request):
+def generate_image(request):
     data = json.loads(request.body)
 
     data['data']['prompt'], data['data']['negative_prompt'] = promptFilter(data)
@@ -52,7 +52,7 @@ def txt2img(request):
     API_IP = chooseAPI('txt2img')
 
     # Try using the requested API, if it fails, use the other one
-    response = requests.post(url=f'{API_IP}/txt2img', json=data)
+    response = requests.post(url=f'{API_IP}/generate_image/', json=data)
     attempts = 0
     while response.status_code != 200 and attempts < 3:
         if response.status_code == 404 or response.status_code == 405:
@@ -65,8 +65,17 @@ def txt2img(request):
             print(f"got other error: {response.status_code}")
             break
         attempts += 1
-        response = requests.post(url=f'{API_IP}/txt2img', json=data)
+        response = requests.post(url=f'{API_IP}/generate_image/', json=data)
 
+    returned_data = response.json()
+    returned_data['API_IP'] = API_IP
+
+    return JsonResponse(returned_data)
+
+@csrf_exempt
+def retrieve_job(request):
+    data = json.loads(request.body)
+    response = requests.get(url=f"{data['API_IP']}/get_job/{data['job_id']}", json=data)
     return JsonResponse(response.json())
 
 @csrf_exempt
