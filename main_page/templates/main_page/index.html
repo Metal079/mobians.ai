@@ -1201,16 +1201,21 @@
           
           job = await response.json();
           console.log("Job ID is " + job.job_id);
+          console.log("Server Used is " + job.API_IP);
+
           jobId = job.job_id;
 
           // Periodically check the job status
           jobStatus = await getJobStatus(job);
           while (jobStatus.status !== "completed") {
-            await new Promise(resolve => setTimeout(resolve, 5000)); // wait for 5 seconds
-            jobStatus = await getJobStatus(job);
-
             // Update the queue position in the HTML
-            document.getElementById('queue-position').innerHTML = "Queue Position: " + jobStatus.queue_position;
+            if (jobStatus.queue_position !== undefined) {
+              console.log("Queue Position: " + jobStatus.queue_position)
+              document.getElementById('queue-position').innerHTML = "Queue Position: " + jobStatus.queue_position;
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 1000)); // wait for 5 seconds
+            jobStatus = await getJobStatus(job);
           }
 
           break;
@@ -1260,11 +1265,13 @@
           // Periodically check the job status
           jobStatus = await getJobStatus(job);
           while (jobStatus.status !== "completed") {
-            await new Promise(resolve => setTimeout(resolve, 5000)); // wait for 5 seconds
+            await new Promise(resolve => setTimeout(resolve, 1000)); // wait for 1 second
             jobStatus = await getJobStatus(job);
 
             // Update the queue position in the HTML
-            document.getElementById('queue-position').innerHTML = "Queue Position: " + jobStatus.queue_position;
+            if (jobStatus.queue_position !== undefined) {
+              document.getElementById('queue-position').innerHTML = "Queue Position: " + jobStatus.queue_position;
+            }
           }
 
           break;

@@ -57,7 +57,7 @@ def generate_image(request):
     except:
         API_IP = chooseAPI('txt2img', [API_IP])
         response = requests.post(url=f'{API_IP}/generate_image/', json=data)
-        
+
     attempts = 0
     while response.status_code != 200 and attempts < 3:
         API_IP = chooseAPI('txt2img', [API_IP])
@@ -66,14 +66,18 @@ def generate_image(request):
         response = requests.post(url=f'{API_IP}/generate_image/', json=data)
 
     returned_data = response.json()
-    returned_data['API_IP'] = API_IP
+
+    #Get index of API_IP in API_IP_List
+    for i in range(len(API_IP_List)):
+        if API_IP_List[i] == API_IP:
+            returned_data['API_IP'] = i
 
     return JsonResponse(returned_data)
 
 @csrf_exempt
 def retrieve_job(request):
     data = json.loads(request.body)
-    response = requests.get(url=f"{data['API_IP']}/get_job/{data['job_id']}", json=data)
+    response = requests.get(url=f"{API_IP_List[data['API_IP']]}/get_job/{data['job_id']}", json=data)
     return JsonResponse(response.json())
 
 @csrf_exempt
@@ -164,31 +168,24 @@ def inpainting(request):
 
     return JsonResponse({'images': base64_images})
 
+# Get the queue length of each API and choose the one with the shortest queue
+def chooseAPI(generateType, triedAPIs=[]):
+    API_queue_length_list = []
+    current_lowest_queue = 9999
+    for index, api in enumerate(API_IP_List):
+        try:
+            if api not in triedAPIs:
+                response = requests.get(url=f'{api}/get_queue_length/')
+                API_queue_length_list.append(response.json()['queue_length'])
+                print(f"API {api} queue length: {response.json()['queue_length']}")
 
-def chooseAPI(generateType, triedAPIs = []):
-    current_apis = API_IP_List.copy()
-
-    if (generateType == 'inpainting'):
-        API_IP = API_IP_List[0]
-
-    else:
-        if len(triedAPIs) > 0:
-            for i in triedAPIs:
-                current_apis.remove(i)
-        API_IP = random.choice(current_apis)
-
-    return API_IP
-
-
-def isAPIAlive(API_IP):
-    try:
-        response = requests.get(url=f'{API_IP}api/test/alive')
-        if response.status_code == 200:
-            return True
-        else:
-            return False
-    except:
-        return False
+                if response.json()['queue_length'] < current_lowest_queue:
+                    current_lowest_queue = index
+        except:
+            print(f"API {api} is down")
+            continue
+    
+    return API_IP_List[current_lowest_queue]
 
 def promptFilter(data):
     prompt = data['data']['prompt']
