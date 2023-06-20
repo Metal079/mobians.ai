@@ -42,6 +42,7 @@ def add_watermark(image, watermark_text, opacity):
     image_with_watermark = Image.alpha_composite(image.convert("RGBA"), watermark)
     return image_with_watermark
 
+#@ratelimit(key='ip', rate='2/10s')
 @csrf_exempt
 def generate_image(request):
     data = json.loads(request.body)
@@ -180,12 +181,13 @@ def chooseAPI(generateType, triedAPIs=[]):
                 print(f"API {api} queue length: {response.json()['queue_length']}")
 
                 if response.json()['queue_length'] < current_lowest_queue:
-                    current_lowest_queue = index
+                    current_lowest_queue = response.json()['queue_length']
+                    lowest_index = index
         except:
             print(f"API {api} is down")
             continue
     
-    return API_IP_List[current_lowest_queue]
+    return API_IP_List[lowest_index]
 
 def promptFilter(data):
     prompt = data['data']['prompt']
