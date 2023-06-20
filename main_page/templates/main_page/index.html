@@ -1214,7 +1214,7 @@
               document.getElementById('queue-position').innerHTML = "Queue Position: " + jobStatus.queue_position;
             }
 
-            await new Promise(resolve => setTimeout(resolve, 1000)); // wait for 5 seconds
+            await new Promise(resolve => setTimeout(resolve, 3000)); // wait for 5 seconds
             jobStatus = await getJobStatus(job);
           }
 
@@ -1265,7 +1265,7 @@
           // Periodically check the job status
           jobStatus = await getJobStatus(job);
           while (jobStatus.status !== "completed") {
-            await new Promise(resolve => setTimeout(resolve, 1000)); // wait for 1 second
+            await new Promise(resolve => setTimeout(resolve, 3000)); // wait for 1 second
             jobStatus = await getJobStatus(job);
 
             // Update the queue position in the HTML
