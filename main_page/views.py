@@ -43,7 +43,7 @@ def add_watermark(image, watermark_text, opacity):
     image_with_watermark = Image.alpha_composite(image.convert("RGBA"), watermark)
     return image_with_watermark
 
-#@ratelimit(key='ip', rate='2/10s')
+@ratelimit(key='ip', rate='2/10s')
 @csrf_exempt
 def generate_image(request):
     data = json.loads(request.body)
