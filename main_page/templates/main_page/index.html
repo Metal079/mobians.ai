@@ -388,15 +388,15 @@
       </div>
 
       <!-- inpaint switch -->
-      <div class="form-check form-switch" id="enable-inpainting">
+      <!-- <div class="form-check form-switch" id="enable-inpainting">
         <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onclick="enableInpaintCanvas()">
-        <label class="form-check-label" for="flexSwitchCheckDefault">Inpaint</label>
+        <label class="form-check-label" for="flexSwitchCheckDefault" style="display: none;">Inpaint</label>
         <span class="ms-1 text-primary" data-bs-toggle="tooltip" data-bs-placement="top"
           title="Allows you to draw on the image you uploaded using your mouse to specify what should be changed. The inpainted areas will be the only ones changed while the rest of the image is unaffected"
           style="background-color: rgba(255, 255, 255, 0.8); padding: 2px 4px; border-radius: 50%; cursor: pointer;">
           ?
         </span>
-      </div>
+      </div> -->
 
       <!-- Advanced options -->
       <div id="advanced-options">
@@ -642,7 +642,7 @@
     function saveSettings() {
         localStorage.setItem("prompt-input", document.getElementById("prompt-input").value);
         localStorage.setItem("custom-denoise", document.getElementById("custom-denoise").value);
-        localStorage.setItem("flexSwitchCheckDefault", document.getElementById("flexSwitchCheckDefault").checked);
+        //localStorage.setItem("flexSwitchCheckDefault", document.getElementById("flexSwitchCheckDefault").checked);
         localStorage.setItem("floatingSelect", document.getElementById("floatingSelect").value);
 
         if (document.getElementById("negative-prompt-input").value != ''){
@@ -658,7 +658,7 @@
     function loadSettings() {
         document.getElementById("prompt-input").value = localStorage.getItem("prompt-input") || '';
         document.getElementById("custom-denoise").value = localStorage.getItem("custom-denoise") || '0.7';
-        document.getElementById("flexSwitchCheckDefault").checked = localStorage.getItem("flexSwitchCheckDefault") === 'true';
+        //document.getElementById("flexSwitchCheckDefault").checked = localStorage.getItem("flexSwitchCheckDefault") === 'true';
         document.getElementById("floatingSelect").value = localStorage.getItem("floatingSelect") || '2';
         changeAspectRatio()
         document.getElementById("negative-prompt-input").value = localStorage.getItem("negative-prompt-input") || '3d, nsfw, worst quality, low quality, watermark, signature, simple background, bad anatomy, bad hands, deformed limbs, blurry, cropped, cross-eyed, extra arms, speech bubble, extra legs, extra limbs, bad proportions, poorly drawn hands, text, flat background';
@@ -799,7 +799,8 @@
 
       // Dont show inpainting for mobile devices
       if (!isMobileDevice()) {
-        document.getElementById("enable-inpainting").style.display = 'block';
+        //document.getElementById("enable-inpainting").style.display = 'block';
+        document.getElementById("enable-inpainting").style.display = 'none';
       }
 
       // Get the base64 string from the data URL
@@ -807,90 +808,90 @@
     }
 
     // inpainting 
-    const canvas = document.getElementById("drawing-canvas");
-    const ctx = canvas.getContext("2d");
-    ctx.lineWidth = 40; // Increase the value for a larger drawn area
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-    let drawing = false;
+    // const canvas = document.getElementById("drawing-canvas");
+    // const ctx = canvas.getContext("2d");
+    // ctx.lineWidth = 40; // Increase the value for a larger drawn area
+    // ctx.lineJoin = "round";
+    // ctx.lineCap = "round";
+    // let drawing = false;
 
-    canvas.addEventListener("mousedown", (e) => {
-      drawing = true;
-      ctx.beginPath();
-      ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
-    });
+    // canvas.addEventListener("mousedown", (e) => {
+    //   drawing = true;
+    //   ctx.beginPath();
+    //   ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    // });
 
-    canvas.addEventListener("mousemove", (e) => {
-      if (!drawing) return;
-      ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
-      ctx.stroke();
-    });
+    // canvas.addEventListener("mousemove", (e) => {
+    //   if (!drawing) return;
+    //   ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    //   ctx.stroke();
+    // });
 
-    canvas.addEventListener("mouseup", () => {
-      drawing = false;
-    });
+    // canvas.addEventListener("mouseup", () => {
+    //   drawing = false;
+    // });
 
-    function enableDrawing() {
-      canvas.style.display = "block";
-    }
+    // function enableDrawing() {
+    //   canvas.style.display = "block";
+    // }
 
-    function disableDrawing() {
-      canvas.style.display = "none";
-    }
+    // function disableDrawing() {
+    //   canvas.style.display = "none";
+    // }
 
-    canvas.addEventListener("mousedown", (e) => {
-      e.preventDefault();
-      drawing = true;
-      ctx.beginPath();
-      ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    // canvas.addEventListener("mousedown", (e) => {
+    //   e.preventDefault();
+    //   drawing = true;
+    //   ctx.beginPath();
+    //   ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
 
-      // Set the globalCompositeOperation based on the mouse button
-      ctx.globalCompositeOperation = e.button === 2 ? "destination-out" : "source-over";
-    });
+    //   // Set the globalCompositeOperation based on the mouse button
+    //   ctx.globalCompositeOperation = e.button === 2 ? "destination-out" : "source-over";
+    // });
 
-    canvas.addEventListener("mousemove", (e) => {
-      if (!drawing) return;
-      ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
-      ctx.stroke();
-    });
+    // canvas.addEventListener("mousemove", (e) => {
+    //   if (!drawing) return;
+    //   ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    //   ctx.stroke();
+    // });
 
-    canvas.addEventListener("mouseup", () => {
-      drawing = false;
-    });
+    // canvas.addEventListener("mouseup", () => {
+    //   drawing = false;
+    // });
 
-    canvas.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-    });
+    // canvas.addEventListener("contextmenu", (e) => {
+    //   e.preventDefault();
+    // });
 
-    function getDrawingBase64() {
-      ctx.globalCompositeOperation = "destination-over";
-      ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.globalCompositeOperation = "source-over";
-      return canvas.toDataURL().split(",")[1];
-    }
+    // function getDrawingBase64() {
+    //   ctx.globalCompositeOperation = "destination-over";
+    //   ctx.fillStyle = "white";
+    //   ctx.fillRect(0, 0, canvas.width, canvas.height);
+    //   ctx.globalCompositeOperation = "source-over";
+    //   return canvas.toDataURL().split(",")[1];
+    // }
 
-    let inpainting = false;
-    const enableInpaintCanvas = () => {
-      inpainting = !inpainting;
-      if (inpainting) {
-        mode = 'inpainting';
-        const imageGrid = document.querySelector('.image-grid');
+    // let inpainting = false;
+    // const enableInpaintCanvas = () => {
+    //   inpainting = !inpainting;
+    //   if (inpainting) {
+    //     mode = 'inpainting';
+    //     const imageGrid = document.querySelector('.image-grid');
 
-        imageGrid.removeEventListener("click", handleImageGridClick);
-        enableDrawing();
-        document.getElementById("drawing-canvas").style.display = "block";
-        document.getElementById("denoise-strength").style.display = "none";
-      }
-      else {
-        mode = 'img2img';
+    //     imageGrid.removeEventListener("click", handleImageGridClick);
+    //     enableDrawing();
+    //     document.getElementById("drawing-canvas").style.display = "block";
+    //     document.getElementById("denoise-strength").style.display = "none";
+    //   }
+    //   else {
+    //     mode = 'img2img';
 
-        // imageGrid.addEventListener("click", handleImageGridClick);
-        disableDrawing()
-        document.getElementById("drawing-canvas").style.display = "none";
-        document.getElementById("denoise-strength").style.display = "block";
-      }
-    };
+    //     // imageGrid.addEventListener("click", handleImageGridClick);
+    //     disableDrawing()
+    //     document.getElementById("drawing-canvas").style.display = "none";
+    //     document.getElementById("denoise-strength").style.display = "block";
+    //   }
+    // };
 
     // Check if user is using mobile device
     function isMobileDevice() {
