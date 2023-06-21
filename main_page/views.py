@@ -10,6 +10,7 @@ from django.contrib.staticfiles import finders
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
+from django_ratelimit.decorators import ratelimit
 from PIL import Image, ImageDraw, ImageFont
 
 from dotenv import load_dotenv
@@ -42,7 +43,7 @@ def add_watermark(image, watermark_text, opacity):
     image_with_watermark = Image.alpha_composite(image.convert("RGBA"), watermark)
     return image_with_watermark
 
-#@ratelimit(key='ip', rate='2/10s')
+@ratelimit(key='ip', rate='2/10s')
 @csrf_exempt
 def generate_image(request):
     data = json.loads(request.body)

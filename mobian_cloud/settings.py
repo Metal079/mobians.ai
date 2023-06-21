@@ -80,23 +80,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mobian_cloud.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-# DBNAME=os.environ.get('DBNAME')
-# DBHOST=os.environ.get('DBHOST')
-# DBUSER=os.environ.get('DBUSER')
-# DBPASS=os.environ.get('DBPASS')
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': DBNAME,
-#         'USER': DBUSER,
-#         'PASSWORD': DBPASS,
-#         'HOST': DBHOST,  # or the IP address of your PostgreSQL server
-#         'PORT': '5432',  # the default PostgreSQL port
-#     }
-# }
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://10.0.0.223:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "example"
+    }
+}
 
 # Session engine
 # Use cache-based session engine instead of the database-based one
@@ -154,7 +147,6 @@ SESSION_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = False #Set to false when developing locally
 CSRF_COOKIE_SECURE = True
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_NAME = 'your_cookie_name'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880

@@ -276,21 +276,38 @@
 </head>
 
 <body>
-  <div class="modal" tabindex="-1" id="error-modal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">API Error</h5>
-          <!-- Add close button to the modal header -->
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>There was an API error, please refresh the page and try again</p>
-          <p>If the issue repeats, its likely the website is down, please check the discord for updates (read the #FAQ)</p>
+  <body>
+    <div class="modal" tabindex="-1" id="error-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">API Error</h5>
+            <!-- Add close button to the modal header -->
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>There was an API error, please refresh the page and try again</p>
+            <p>If the issue repeats, its likely the website is down, please check the discord for updates (read the #FAQ)</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  
+    <div class="modal" tabindex="-1" id="rate-limit-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Too many request Error</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>In order to be fair to everyone there is a limit to the amount of request you can enter in a given time frame.</p>
+            <p>Please only use one tab and try again.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  
   
 
   <!-- Image box for generations -->
@@ -1192,7 +1209,13 @@
           });
 
           // Check if the response status code is not 200
-          if(response.status !== 200) {
+          if(response.status == 403) {
+            console.error(`Error: ${response.status}`); // Log the error
+            const errorModal = new bootstrap.Modal(document.getElementById("rate-limit-modal")); // Get the modal
+            errorModal.show(); // Show the modal
+            return; // Exit from the function
+          }
+          else if(response.status !== 200) {
             console.error(`Error: ${response.status}`); // Log the error
             const errorModal = new bootstrap.Modal(document.getElementById("error-modal")); // Get the modal
             errorModal.show(); // Show the modal
@@ -1251,7 +1274,13 @@
           });
 
           // Check if the response status code is not 200
-          if(response.status !== 200) {
+          if(response.status == 403) {
+            console.error(`Error: ${response.status}`); // Log the error
+            const errorModal = new bootstrap.Modal(document.getElementById("rate-limit-modal")); // Get the modal
+            errorModal.show(); // Show the modal
+            return; // Exit from the function
+          }
+          else if(response.status !== 200) {
             console.error(`Error: ${response.status}`); // Log the error
             const errorModal = new bootstrap.Modal(document.getElementById("error-modal")); // Get the modal
             errorModal.show(); // Show the modal
