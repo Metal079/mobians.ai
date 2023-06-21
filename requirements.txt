@@ -7,3 +7,5 @@ whitenoise
 gevent
 gunicorn
 django-ratelimit
+django-redis
+Redis
