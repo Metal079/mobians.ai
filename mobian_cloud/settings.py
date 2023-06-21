@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'mobian_cloud.wsgi.application'
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://10.0.0.223:6379/1",
+        "LOCATION": "redis://[2601:247:c881:8060::d457]:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
