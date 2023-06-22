@@ -43,10 +43,21 @@ def add_watermark(image, watermark_text, opacity):
     image_with_watermark = Image.alpha_composite(image.convert("RGBA"), watermark)
     return image_with_watermark
 
-#@ratelimit(key='ip', rate='2/10s')
+def session_key(group, request):
+    return str(request.session.session_key)
+
+@ratelimit(key=session_key, rate='2/10s')
 @csrf_exempt
 def generate_image(request):
+    if not request.session.session_key:
+        request.session.create()
+
+    if getattr(request, 'limited', False):
+        return JsonResponse({'detail': 'Request was rate limited.'}, status=429)
+    
     data = json.loads(request.body)
+    was_limited = getattr(request, 'limited', False)
+    print(f"was_limited: {was_limited}")
 
     data['data']['prompt'], data['data']['negative_prompt'] = promptFilter(data)
     data['data']['negative_prompt'] = fortify_default_negative(data['data']['negative_prompt'])

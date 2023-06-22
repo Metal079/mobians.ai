@@ -80,16 +80,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'mobian_cloud.wsgi.application'
 
 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": "redis://7.tcp.ngrok.io:21658/1",
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient"
-#         },
-#         "KEY_PREFIX": "example"
-#     }
-# }
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://7.tcp.ngrok.io:21658/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "example"
+    }
+}
 
 # Session engine
 # Use cache-based session engine instead of the database-based one
