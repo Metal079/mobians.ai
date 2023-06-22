@@ -729,7 +729,7 @@
     function handleImageSelect(event) {
       const closeButton = document.getElementById("close-button");
       const denoiseStrength = document.getElementById("denoise-strength");
-      const inpaint = document.getElementById("enable-inpainting");
+      // const inpaint = document.getElementById("enable-inpainting");
       const imageFile = event.target.files[0];
 
       if (imageFile) {
@@ -754,7 +754,7 @@
 
           // Dont show inpainting for mobile devices
           if (!isMobileDevice()) {
-            inpaint.style.display = 'block';
+            // inpaint.style.display = 'block';
           }
 
           // Get the base64 string from the data URL
@@ -800,7 +800,7 @@
       // Dont show inpainting for mobile devices
       if (!isMobileDevice()) {
         //document.getElementById("enable-inpainting").style.display = 'block';
-        document.getElementById("enable-inpainting").style.display = 'none';
+        // document.getElementById("enable-inpainting").style.display = 'none';
       }
 
       // Get the base64 string from the data URL
@@ -985,7 +985,7 @@
       document.getElementById("img-top-left").src = topLeftImageCache.src;
       
       // get rid of inpaint on close-button
-      document.getElementById("enable-inpainting").style.display = 'none';
+      // document.getElementById("enable-inpainting").style.display = 'none';
       
       mode = 'txt2img';
     }
@@ -1374,14 +1374,14 @@
 
           // Hide the reference image options
           document.getElementById("denoise-strength").style.display = 'none';
-          document.getElementById("enable-inpainting").style.display = 'none';
+          // document.getElementById("enable-inpainting").style.display = 'none';
         }
         
         // Disable the image upload feature after an image has been uploaded
         disableImageUpload();
 
         // Hide inpainting 
-        document.getElementById("enable-inpainting").style.display = 'none';
+        // document.getElementById("enable-inpainting").style.display = 'none';
 
         // Set the src attribute of the image elements to the base64-encoded images
         document.getElementById('img-top-left').src = 'data:image/png;base64,' + base64Images[0];
