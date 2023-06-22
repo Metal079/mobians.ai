@@ -63,7 +63,7 @@ def generate_image(request):
     attempts = 0
     while response.status_code != 200 and attempts < 3:
         API_IP = chooseAPI('txt2img', [API_IP])
-        print(f"got error: {response.status_code}")
+        print(f"got error: {response.status_code} for generate_image, api: {API_IP}")
         attempts += 1
         response = requests.post(url=f'{API_IP}/generate_image/', json=data)
 
@@ -80,6 +80,11 @@ def generate_image(request):
 def retrieve_job(request):
     data = json.loads(request.body)
     response = requests.get(url=f"{API_IP_List[data['API_IP']]}/get_job/{data['job_id']}", json=data)
+
+    if response.status_code != 200:
+        print(f"got error: {response.status_code} for retrieve_job on job {data['job_id']}, api: {API_IP_List[data['API_IP']]}")
+        response = requests.get(url=f"{API_IP_List[data['API_IP']]}/get_job/{data['job_id']}", json=data)
+        
     return JsonResponse(response.json())
 
 @csrf_exempt
