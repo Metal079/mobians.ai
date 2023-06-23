@@ -46,7 +46,7 @@ def add_watermark(image, watermark_text, opacity):
 def session_key(group, request):
     return str(request.session.session_key)
 
-@ratelimit(key=session_key, rate='2/10s')
+@ratelimit(key=session_key, rate='1/10s')
 @csrf_exempt
 def generate_image(request):
     if not request.session.session_key:

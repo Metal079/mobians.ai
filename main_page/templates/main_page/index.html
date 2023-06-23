@@ -1163,6 +1163,12 @@
           },
           body: JSON.stringify(job)
         });
+
+        // Show error modal if there is an error
+        if (response.status == 500) {
+          $('#error-modal').modal('show');
+          return;
+        }
         return await response.json();
       }
 
@@ -1238,7 +1244,7 @@
               document.getElementById('queue-position').innerHTML = "Queue Position: " + jobStatus.queue_position;
             }
 
-            await new Promise(resolve => setTimeout(resolve, 3000)); // wait for 5 seconds
+            await new Promise(resolve => setTimeout(resolve, 3000)); // wait for 3 seconds
             jobStatus = await getJobStatus(job);
           }
           break;
