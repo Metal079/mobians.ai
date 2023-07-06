@@ -1166,7 +1166,9 @@
 
         // Show error modal if there is an error
         if (response.status == 500) {
-          $('#error-modal').modal('show');
+          console.error(`Error: ${response.status}`); // Handle the error
+          const errorModal = new bootstrap.Modal(document.getElementById("error-modal"));
+          errorModal.show();
           return;
         }
         return await response.json();
