@@ -1169,7 +1169,7 @@
           console.error(`Error: ${response.status}`); // Handle the error
           const errorModal = new bootstrap.Modal(document.getElementById("error-modal"));
           errorModal.show();
-          return;
+          return { status: 'error' };
         }
         return await response.json();
       }
@@ -1239,7 +1239,7 @@
 
           // Periodically check the job status
           jobStatus = await getJobStatus(job);
-          while (jobStatus.status !== "completed" && jobStatus !== undefined) {
+          while (jobStatus !== undefined && jobStatus.status !== "completed") {
             // Update the queue position in the HTML
             if (jobStatus.queue_position !== undefined) {
               console.log("Queue Position: " + jobStatus.queue_position)
